@@ -3,260 +3,568 @@
 # ####### (1918, 1050)
 
 
-coordinates_1 = [[(229, 264), (1938, 1059)],[(465, 1470), (1743, 550)],[(2172, 11), (1844, 1212)],[(3356, 4422), (618, 929)]]
+coordinates_1 = [[(0, 0), (1851, 429)],[(78, 35), (1957, 2381)],[(131, 1549), (1702, 341)],[(3017, 0), (1106, 315)],[(2017, 271), (1921, 525)],
+[(2035, 1444), (1868, 438)],[(2044, 1803), (1903, 665)],['Rekapitulace', (2307, 858)],['Celkem', (1614, 674),4],
+[(1087, 3750), (772, 1532)]]
 
-layout_1 = [[
+#Rekapitulace (816, 1269)  jame kharid ('2412', '3668')
+layout_1 = [
+    [
+            {"title": "CrNo", "key" : "-", "dist": {"LINE":0},"postprocessor":"_dobropis_"},
 
-            {"title": "NaSupRe", "key" : "Dodavatel:", "dist": "IČ:"},
-            {"title": "INSuRe", "key" : "IČ:", "dist": "_next_"},
-            {"title": "'TIDSupRe", "key" : "'DIČ:", "dist": "_next_"},
-            {"title": "Telefon", "key" : "Telefon:", "dist": "Mobil:"},
-            {"title": "Mobil", "key" : "Mobil:", "dist": "Fax:"},
-            {"title": "Fax", "key" : "Fax:", "dist": "_next_"},
-            {"title": "EmAdr", "key" : "E-mail:", "dist": 1},
-
-
-],
-[
-            {"title": "IssDay", "key" : "vystavení:", "dist": "_next_"},
-            {"title": "PayDay", "key" : "splatnosti:", "dist": "_next_"},
-            {"title": "VATDay", "key" : "plnění:", "dist": "_next_"},
-],
-[
-            {"title": "InNum", "key" : "DOKLAD" , "dist" : '2' },
-            {"title": "VaSym", "key" : "Variabilní" , "dist" : '2' },
-            {"title": "KoSy", "key" : "Konstantní" , "dist" : '2' },
-            {"title": "INUseTy", "key" : "IČ:" , "dist" : '_next_' },
-            {"title": "TIDUseTy", "key" : "DIČ:" , "dist" : '_next_' },
-            {"title": "NaUseTy", "key" : "DIČ:" , "dist" : [2,'_line_'] },
-            {"title": "AddUseTy", "key" : "DIČ:" , "dist" : [2,'_rest_'] },
- 
-],
-[           
-            {"title": "ToInv", "key" : -1 , "dist" : "_rest_" ,"preprocessor" : "_num_"},
+    ],
+    [
             
-],
+        #   {"title": "Chera", "key" : "Dodavatel:", "dist": "_break_"},
+            {"title": "NaSup", "key" : "Dodavatel:", "dist": (1,"_line_")},
+            {"title": "StSup", "key" : "Dodavatel:", "dist": (2,"_line_")},
+            {"title": "PoSup", "key" : "Dodavatel:", "dist": (3,"_line_"),"postprocessor":"_postcode_"},
+            {"title": "CiSup", "key" : "Dodavatel:", "dist": (3,"_line_"),"postprocessor":"_cityname_"},
+            {"title": "CoSup", "key" : "Dodavatel:", "dist": (4,"_line_")},
+            {"title": "INSup", "key" : "IČ:", "dist": "_next_"},
+            {"title": "TIDSup", "key" : "DIČ:", "dist": "_next_"},
+            {"title": "IBNSup","key" : "IBAN:", "dist": "_line_"},
+            {"title": "BICSup", "key" : "BIC:", "dist": "_line_"},
+            {"title": "VaSym","key" : "Var.", "dist": "2","postprocessor":"check_num"},
+            {"title": "KoSy","key" : "Konst.", "dist":"2","postprocessor":"check_num"},
+            {"title": "SpSym","key" : "Spec.", "dist":"2","postprocessor":"check_num"},
+            {"title": "PayRef", "key" : "úhrady:", "dist": "_line_"},
 
-]
+
+            ],
+
+            [
+            {"title": "BaAcSup", "key" : "účet:", "dist": "1"},
+            {"title": "BaCoSup", "key" : "účet:", "dist": "3"},
+
+            ],
+
+            [
+            {"title": "InNum", "key" : "-", "dist": {"LINE":0}},
+
+            ],
+
+
+            [
+            {"title": "NaCus", "key" : "sídlo:", "dist": "_line_"},
+            {"title": "StCus", "key" : "sídlo:", "dist": (1,"_line_")},
+            {"title": "PoCus", "key" : "sídlo:", "dist": (2,"_line_"),"postprocessor":"_postcode_"},
+            {"title": "CiCus", "key" : "sídlo:", "dist": (2,"_line_"),"postprocessor":"_cityname_"},
+            {"title": "CoCus", "key" : "sídlo:", "dist": (3,"_line_")},
+
+            ],
+
+            [
+            {"title": "AdDel", "key" : "určení:", "dist": "_rest_"},
+
+                #[(2000, 1435), (1930, 753)]
+            ],
+
+            [
+            {"title": "OrdNum", "key" : "Objednávka:", "dist": "_line_"},#
+            {"title": "IssDay", "key" : "Vystaveno:", "dist": "_line_"},#
+            {"title": "PayDay", "key" : "splatnosti:", "dist": "_line_"},#
+            {"title": "VATDay", "key" : "plnění:", "dist": "_line_"},#
+            ],
+
+            #the part for the VAT and accounting related sections
+            [
+
+            {"title": "VATRat0", "key" : 0, "dist": "_rest_","postprocessor":"VATRat0"},
+            {"title": "VATRat10", "key" : 0, "dist": "_rest_","postprocessor":"VATRat10"},
+            {"title": "VATRat15", "key" : 0, "dist": "_rest_","postprocessor":"VATRat15"},
+            {"title": "VATRat21", "key" : 0, "dist": "_rest_","postprocessor":"VATRat21"},
+
+            ],
+
+            [
+            {"title": "ToInv", "key" : 'úhradě', "dist": "Zálohy"},
+            {"title": "AddPay", "key" : 'Zálohy', "dist": "Zbývá"},
+            {"title": "ToPay", "key" : 'uhradit', "dist": [2,"_rest_"]},
+            {"title": "InCur", "key" : 'uhradit', "dist": "_next_"},
+
+            ],
+
+            [
+            {"title": "ExVat0", "key" : '-', "dist": {"LINE":0},"postprocessor":"ExVat0"},
+            {"title": "ExVat10", "key" : '-', "dist": {"LINE":1},"postprocessor":"ExVat10"},
+            {"title": "ExVat15", "key" : '-', "dist": {"LINE":2},"postprocessor":"ExVat15"},
+            {"title": "ExVat21", "key" : '-', "dist": {"LINE":3},"postprocessor":"ExVat21"},
+
+
+            ],
+
+
+            ]
+#             {"title": "Fax", "key" : "Fax:", "dist": "_next_"},
+#             {"title": "EmAdr", "key" : "E-mail:", "dist": 1},
+
+
+# ],
+# [
+#             {"title": "IssDay", "key" : "vystavení:", "dist": "_next_"},
+#             {"title": "PayDay", "key" : "splatnosti:", "dist": "_next_"},
+#             {"title": "VATDay", "key" : "plnění:", "dist": "_next_"},
+# ],
+# [
+#             {"title": "InNum", "key" : "DOKLAD" , "dist" : '2' },
+#             {"title": "VaSym", "key" : "Variabilní" , "dist" : '2' },
+#             {"title": "KoSy", "key" : "Konstantní" , "dist" : '2' },
+#             {"title": "INUseTy", "key" : "IČ:" , "dist" : '_next_' },
+#             {"title": "TIDUseTy", "key" : "DIČ:" , "dist" : '_next_' },
+#             {"title": "NaUseTy", "key" : "DIČ:" , "dist" : [2,'_line_'] },
+#             {"title": "AddUseTy", "key" : "DIČ:" , "dist" : [2,'_rest_'] },
+ 
+# ],
+# [           
+#             {"title": "ToInv", "key" : '-' , "dist" : {"LINE":-1}},
+            
+# ],
+
+#]
 
 
 
 ############
+coordinates_2 = [[(2112, 27), (1985, 532)],[(27, 27), (1742, 1308)],
+[('192', '1216'), (1962, 779)],[(2084, 96), (1918, 814)],
+[(2688, 586), (1349, 359)],[(2215, 800), (1402, 464)],
+[(3419, 1860), (508, 1673)],['Sazba',(236, 428)],
+['Základ', (400, 429),[-25,-5]],
+['Celkem', (605, 700),4],
+]
 
-coordinates_2 = [[(341, 175), (1866, 1650)],[(2172, 183), (1830, 1584)]]
-
-
+#Rekapitulace (816, 1269)  jame kharid ('2412', '3668')
 layout_2 = [
-    
     [
-
-       
-            {"title": "NaSupRe", "key" : "Dodavatel:", "dist": [5,"_line_"]},
-            {"title": "INSuRe", "key" : "IČ:", "dist": "_next_"},
-            {"title": "TIDSupRe", "key" : "IČ:", "dist": "3"},
-            {"title": "AddUseTy", "key" : "IČ:" , "dist" : [4,'Bankovní'] },
-            {"title": "BaAcSupRe", "key" : "Banka:", "dist": "IBAN/SWIFT:" },
-            {"title": "IBNSupAc", "key" : "IBAN/SWIFT:", "dist": "_next_"},
-            {"title": "BICSupAc", "key" : "IBAN/SWIFT:", "dist": "3"},
+            {"title": "CrNo", "key" : "-", "dist": {"LINE":0},"postprocessor":"_dobropis_"},
+            {"title": "InNum", "key" : "č.", "dist":"_next_"},
 
 
     ],
+    [
+            
+            {"title": "NaSup", "key" : "Dodavatel:", "dist": (1,"_line_")},
+            {"title": "StSup", "key" : "Dodavatel:", "dist": (2,"_line_")},
+            {"title": "PoSup", "key" : "Dodavatel:", "dist": (3,"_line_"),"postprocessor":"_postcode_"},
+            {"title": "CiSup", "key" : "Dodavatel:", "dist": (3,"_line_"),"postprocessor":"_cityname_"},
+            {"title": "INSup", "key" : "IČ:", "dist": "_next_"},
+            {"title": "TIDSup", "key" : "DIČ:", "dist": "_next_"},
+            # {"title": "IBNSup","key" : "IBAN:", "dist": "_line_"},
+            # {"title": "BICSup", "key" : "BIC:", "dist": "_line_"},
+            # {"title": "VaSym","key" : "Var.", "dist": "2","postprocessor":"check_num"},
+            # {"title": "KoSy","key" : "Konst.", "dist":"2","postprocessor":"check_num"},
+            # {"title": "SpSym","key" : "Spec.", "dist":"2","postprocessor":"check_num"},
+            # {"title": "PayRef", "key" : "úhrady:", "dist": "_line_"},
 
-[
-            {"title": "InNum", "key" : "DOKLAD" , "dist" : '2' },
-            {"title": "VaSym", "key" : "Variabilní" , "dist" : '2' },
-            {"title": "KoSy", "key" : "Konstantní" , "dist" : '2' },
-            {"title": "INUseTy", "key" : "IČ:" , "dist" : '_next_' },
-            {"title": "TIDUseTy", "key" : "DIČ:" , "dist" : '_next_' },
-            {"title": "NaUseTy", "key" : "IČ:" , "dist" : [2,'_line_'] },
-            {"title": "AddUseTy", "key" : "IČ:" , "dist" : [2,'Tel.:'] },
-            {"title": "IssDay", "key" : "vystavení:", "dist": "_next_"},
-            {"title": "PayDay", "key" : "splatnosti:", "dist": "_next_"},
-            {"title": "VATDay", "key" : "platby:", "dist": "_next_"},
- 
-],
 
+            ],
+
+            [
+            {"title": "BaAcSup", "key" : "účtu:", "dist": "1"},
+            {"title": "BaCoSup", "key" : "účtu:", "dist": "2"},
+            {"title": "IssDay", "key" : "vystavení:", "dist": "_line_"},#
+            {"title": "PayDay", "key" : "splatnosti:", "dist": "_line_"},#
+            {"title": "VATDay", "key" : "plnění:", "dist": "_line_"},#
+
+            ],
+
+            [
+
+            {"title": "VaSym","key" : "Variabilní", "dist": "2","postprocessor":"check_num"},
+            {"title": "KoSy","key" : "Konstantní", "dist":"2","postprocessor":"check_num"},
+
+            ],
+
+            [
+            {"title": "INCus", "key" : "IČ:", "dist": "_line_"},
+            {"title": "TIDCus", "key" : "DIČ:", "dist": "_line_"},
+            ],
+
+            [
+            {"title": "NaCus", "key" : "-", "dist":{"LINE":0}},
+            {"title": "StCus", "key" : "-", "dist": {"LINE":1}},
+            {"title": "PoCus", "key" : "-", "dist": {"LINE":2},"postprocessor":"_postcode_"},
+            {"title": "CiCus", "key" : "-", "dist": {"LINE":2},"postprocessor":"_cityname_"},
+
+            ],
+            [
+            {"title": "ToInv", "key" : '-', "dist": {"LINE":-2}},
+            {"title": "ToPay", "key" : '-', "dist": {"LINE":-1}},
+
+            ],
+
+            [
+
+            {"title": "VATRat0", "key" : 0, "dist": "_rest_","postprocessor":"existVAT_0"},
+            {"title": "VATRat10", "key" : 0, "dist": "_rest_","postprocessor":"existVAT_10"},
+            {"title": "VATRat15", "key" : 0, "dist": "_rest_","postprocessor":"existVAT_15"},
+            {"title": "VATRat21", "key" : 0, "dist": "_rest_","postprocessor":"existVAT_21"},
+
+            ],
+
+    #         [
+    #         {"title": "NaCus", "key" : "sídlo:", "dist": "_line_"},
+    #         {"title": "StCus", "key" : "sídlo:", "dist": (1,"_line_")},
+    #         {"title": "PoCus", "key" : "sídlo:", "dist": (2,"_line_"),"postprocessor":"_postcode_"},
+    #         {"title": "CiCus", "key" : "sídlo:", "dist": (2,"_line_"),"postprocessor":"_cityname_"},
+    #         {"title": "CoCus", "key" : "sídlo:", "dist": (3,"_line_")},
+
+    #         ],
+
+    #         [
+    #         {"title": "AdDel", "key" : "určení:", "dist": "_rest_"},
+
+    #             #[(2000, 1435), (1930, 753)]
+    #         ],
+
+    #         [
+    #         {"title": "OrdNum", "key" : "Objednávka:", "dist": "_line_"},#
+    #         {"title": "IssDay", "key" : "Vystaveno:", "dist": "_line_"},#
+    #         {"title": "PayDay", "key" : "splatnosti:", "dist": "_line_"},#
+    #         {"title": "VATDay", "key" : "plnění:", "dist": "_line_"},#
+    #         ],
+
+    #         #the part for the VAT and accounting related sections
+
+
+    #         [
+    #         {"title": "ToInv", "key" : 'úhradě', "dist": "Zálohy"},
+    #         {"title": "AddPay", "key" : 'Zálohy', "dist": "Zbývá"},
+    #         {"title": "ToPay", "key" : 'uhradit', "dist": [2,"_rest_"]},
+    #         {"title": "InCur", "key" : 'uhradit', "dist": "_next_"},
+
+    #         ],
+
+            [
+            {"title": "ExVat0", "key" : '-', "dist": {"LINE":1}},
+            {"title": "ExVat10", "key" : '-', "dist": {"LINE":2}},
+            {"title": "ExVat15", "key" : '-', "dist": {"LINE":3}},
+            {"title": "ExVat21", "key" : '-', "dist": {"LINE":4}},
+
+
+            ],
+
+            [
+            {"title": "ToInv10", "key" : '-', "dist": {"LINE":1}},
+            {"title": "ToInv15", "key" : '-', "dist": {"LINE":2}},
+            {"title": "ToInv21", "key" : '-', "dist": {"LINE":3}},
+
+
+            ],
+
+
+            ]
+##############################################################
+
+coordinates_3 = [
+    [(100, 150), (1979, 727)],
+    [('2977', '52'), (981, 726)],
+    [(157, 43), (1296, 482)],
+    [(1234, 52), (885, 543)],
+
+
+    [(315, 1732), (1191, 324)],
+    [(1550, 1732), (508, 324)],
+
+    [(1068, 1216), (928, 630)],
+    [(262, 1338), (824, 482)],
+    [(2145, 656), (1770, 866)],
+    [(2163, 1610), (1156, 429)],
+
+    ['CELKEM', (2*319, 400),[-50,-85]],
+
+
+    ['úhradě:', (650, 120),[50,-10]],
+
+    ['uhradit:', (650, 120),[50,-10]],
+    #uhradit:
 ]
-
-#############################################################
-coordinates_3 = [[(200, 17), (1095, 403)],[(1471, 140), (595, 306)],[(1996, 131), (1305, 262)],[(3056, 393), (815, 394),],
-[(2000, 402), (1857, 1619)]]
-
 
 layout_3 = [
+    [
+            {"title": "CrNo", "key" : 'Faktura', "dist": "_line_","postprocessor":"_dobropis_"},
+
+    ],
+    [
+            {"title": "InNum", "key" : '-', "dist":{"LINE":0}},
+
+    ],
+
+    [
+            
+        #   {"title": "Chera", "key" : "Dodavatel:", "dist": "_break_"},
+            {"title": "NaSup", "key" : "-", "dist": {"LINE":0}},
+            {"title": "StSup", "key" : "-", "dist": {"LINE":1}},
+            {"title": "PoSup", "key" : "-", "dist": {"LINE":2},"postprocessor":"_postcode_"},
+            {"title": "CiSup", "key" : "-", "dist": {"LINE":2},"postprocessor":"_cityname_"},
+            {"title": "CoSup", "key" : "-", "dist": {"LINE":3}},
+            # {"title": "CoSup", "key" : "Dodavatel:", "dist": (4,"_line_")},
+            # {"title": "INSup", "key" : "IČ:", "dist": "_next_"},
+            # {"title": "TIDSup", "key" : "DIČ:", "dist": "_next_"},
+            # {"title": "IBNSup","key" : "IBAN:", "dist": "_line_"},
+            # {"title": "BICSup", "key" : "BIC:", "dist": "_line_"},
+            # {"title": "VaSym","key" : "Var.", "dist": "2","postprocessor":"check_num"},
+            # {"title": "KoSy","key" : "Konst.", "dist":"2","postprocessor":"check_num"},
+            # {"title": "SpSym","key" : "Spec.", "dist":"2","postprocessor":"check_num"},
+            # {"title": "PayRef", "key" : "úhrady:", "dist": "_line_"},
+
+
+            ],
+
+            [
+
+            {"title": "INSup", "key" : "DIČ:", "dist": "-1"},
+            {"title": "TIDSup", "key" : "DIČ:", "dist": "1"},
+            ],
+
+            [
+            {"title": "BaAcSup", "key" : '-', "dist": {"LINE":-1}},
+            ],
+
+            [
+            {"title": "BaCoSup", "key" : '-', "dist": {"LINE":-1}},
+            ],
+
+            [
+            {"title": "KoSy","key" : "konstantní:", "dist": "1","postprocessor":"check_num"},
+            {"title": "VaSym","key" : "variabilní:", "dist":"1","postprocessor":"check_num"},
+            {"title": "SpSym","key" : "specifický:", "dist":"1","postprocessor":"check_num"},
+            ],
+
+            [
+            {"title": "IssDay", "key" : "vystavení:", "dist": "_line_"},#
+            {"title": "PayDay", "key" : "splatnosti:", "dist": "_line_"},#
+            {"title": "VATDay", "key" : "plnění:", "dist": "_line_"},#
     
-    [
+            ],
 
-       
-            {"title": "NaSupRe", "key" : 0 , "dist": [1,"_line_"]},
-            {"title": "AddUseTy", "key" : 0 , "dist" : [1,"_rest_"] },
+            [
+            {"title": "INCus", "key" : "DIČ:", "dist": "-1"},
+            {"title": "TIDCus", "key" : "DIČ:", "dist": "1"},
+            {"title": "NaCus", "key" : "Odběratel", "dist": (1,"_line_")},
+            {"title": "StCus", "key" : "Odběratel", "dist": (2,"_line_")},
+            {"title": "PoCus", "key" : "Odběratel", "dist": (3,"_line_"),"postprocessor":"_postcode_"},
+            {"title": "CiCus", "key" : "Odběratel", "dist": (3,"_line_"),"postprocessor":"_cityname_"},
+            {"title": "CoCus", "key" : "Odběratel", "dist": (4,"_line_")},
 
-            # {"title": "TIDSupRe", "key" : "IČ:", "dist": "3"},
-            # {"title": "BaAcSupRe", "key" : "Banka:", "dist": "IBAN/SWIFT:" },
-            # {"title": "IBNSupAc", "key" : "IBAN/SWIFT:", "dist": "_next_"},
-            # {"title": "BICSupAc", "key" : "IBAN/SWIFT:", "dist": "3"},
-            # {"title": "VATDay", "key" : "plnění:", "dist": "_next_"},
+            ],
 
+            [
+            # {"title": "BaAcSup", "key" : "účet:", "dist": "1"},
+            # {"title": "BaCoSup", "key" : "účet:", "dist": "3"},
+            {"title": "AdDel", "key" : 0, "dist": "_rest_"},
 
-    ],
+            ],
 
-    [           
-            {"title": "INSuRe", "key" : "IČ:", "dist": "_next_"},
-            {"title": "TIDSupRe", "key" : "DIČ:", "dist": "_next_"},
-            # {"title": "InNum", "key" : "DOKLAD" , "dist" : '2' },
-            # {"title": "VaSym", "key" : "Variabilní" , "dist" : '2' },
-            # {"title": "KoSy", "key" : "Konstantní" , "dist" : '2' },
-            # {"title": "INUseTy", "key" : "IČ:" , "dist" : '_next_' },
-            # {"title": "TIDUseTy", "key" : "DIČ:" , "dist" : '_next_' },
-            # {"title": "NaUseTy", "key" : "IČ:" , "dist" : [2,'_line_'] },
-            # {"title": "AddUseTy", "key" : "IČ:" , "dist" : [2,'Tel.:'] },
-            # {"title": "IssDay", "key" : "vystavení:", "dist": "_next_"},
-            # {"title": "PayDay", "key" : "splatnosti:", "dist": "_next_"},
-            # {"title": "VATDay", "key" : "platby:", "dist": "_next_"},
- 
-    ],
+            [
 
-    [
-            {"title": "Telefon", "key" : "tel.:", "dist": "_next_"},
-            {"title": "Mobil", "key" : "mobil:", "dist": "_next_"},
-            {"title": "Fax", "key" : "fax:", "dist": "_next_"},
-            {"title": "EmAdr", "key" : "email:", "dist": "_next_"},
-    ],
+            {"title": "VATRat0", "key" : 0, "dist": "_rest_","preprocessor":"fix_percentage",  "postprocessor":"existVAT_0"},
+            {"title": "VATRat10", "key" : 0, "dist": "_rest_","preprocessor":"fix_percentage", "postprocessor":"existVAT_10"},
+            {"title": "VATRat15", "key" : 0, "dist": "_rest_","preprocessor":"fix_percentage", "postprocessor":"existVAT_15"},
+            {"title": "VATRat21", "key" : 0, "dist": "_rest_","preprocessor":"fix_percentage", "postprocessor":"existVAT_21"},
 
-    [
-            {"title": "InNum", "key" : 0 , "dist": [1,"_next_"]}
-    ],
+            ],
 
-    [
-           {"title": "NaCusTy", "key" : "Odběratel" , "dist" : '_line_' },
-           {"title": "AdCus", "key" : "Odběratel" , "dist" :  "IČ:"},
-           {"title": "INUseTy", "key" : "IČ:" , "dist" : '_next_' },
-           {"title": "TIDUseTy", "key" : "DIČ:" , "dist" : '_next_' },
+            [
+            {"title": "ToInv", "key" : 0, "dist": "_rest_"},
+            ],
 
-    ],
+            [
+            {"title": "ToPay", "key" : '-', "dist": {"LINE":0}},
+
+            ],
 
 
 ]
-
-############
-
-coordinates_4 = [[(2758, 8), (1314, 1532)],[(1278, 673), (1542, 849)],[(324, 113), (989, 1427)],[(2732, 4559), (1279, 753)],
-            [(2732, 4559), (1279, 753)]]
+#############################################################
+coordinates_4 = [
+    [(2154, 148), (1620, 403)],
+    [(297, 192), (1787, 1610)],
+    [(2014, 166), (2014, 1181)],
+    [(2023, 1452), (2040, 464)],
+    [(2102, 1549), (1988, 2546)],
+    ]
 
 
 layout_4 = [
-    
     [
-
-       
-            {"title": "NaSupRe", "key" : "Dodavatel:", "dist": [1,"_line_"]},
-            {"title": "AddUseTy", "key" : "Dodavatel:" , "dist" : [1,'IČO:'] },
-            {"title": "INSuRe", "key" : "IČO:", "dist": "_next_"},
-            {"title": "TIDSupRe", "key" : "DIČ:", "dist": "_next_"},
-            {"title": "BaAcSupRe", "key" : "účet", "dist": "2" },
-            {"title": "VATDay", "key" : "plnění:", "dist": "_next_"},
-            {"title": "IssDay", "key" : "vystavení:", "dist": "_next_"},
-            {"title": "Telefon", "key" : "Telefony:", "dist": "_rest_"},
-
-
-
+            {"title": "CrNo", "key" : "-", "dist": {"LINE":0},"postprocessor":"_dobropis_"},
+            {"title": "InNum", "key" : "číslo:", "dist":"_next_"},
 
     ],
-
-[
-              {"title": "PayDay", "key" : "SPLATNOSTI:", "dist": "_next_"},
-              {"title": "ToInv", "key" : "ÚHRADĚ:" , "dist" : "DATUM" },
-              {"title": "InNum", "key" : "DOKLAD" , "dist" : '2' },
-#             {"title": "VaSym", "key" : "Variabilní" , "dist" : '2' },
-#             {"title": "KoSy", "key" : "Konstantní" , "dist" : '2' },
-#             {"title": "INUseTy", "key" : "IČ:" , "dist" : '_next_' },
-#             {"title": "TIDUseTy", "key" : "DIČ:" , "dist" : '_next_' },
-#             {"title": "NaUseTy", "key" : "IČ:" , "dist" : [2,'_line_'] },
-#             {"title": "AddUseTy", "key" : "IČ:" , "dist" : [2,'Tel.:'] },
-#             {"title": "IssDay", "key" : "vystavení:", "dist": "_next_"},
-#             {"title": "VATDay", "key" : "platby:", "dist": "_next_"},
- 
-],
     [
-              {"title": "NaCusTy", "key" : "Odběratel" , "dist" : [2,'_line_'] },
-              {"title": "AdCus", "key" : "Odběratel" , "dist" :  [2,'IČO:']},
-              {"title": "INUseTy", "key" : "IČO:" , "dist" : '_next_' },
-              {"title": "TIDUseTy", "key" : "DIČ:" , "dist" : '_next_' }, 
-              {"title": "BaAcSupAc", "key" : "Bankovní" , "dist" : '2' },
-    ],
+            
+        #   {"title": "Chera", "key" : "Dodavatel:", "dist": "_break_"},
+            {"title": "NaSup", "key" : "Dodavatel:", "dist": (1,"_line_")},
+            {"title": "StSup", "key" : "Dodavatel:", "dist": (2,"_line_")},
+            {"title": "PoSup", "key" : "Dodavatel:", "dist": (3,"_line_"),"postprocessor":"_postcode_"},
+            {"title": "CiSup", "key" : "Dodavatel:", "dist": (3,"_line_"),"postprocessor":"_cityname_"},
+            # {"title": "CoSup", "key" : "Dodavatel:", "dist": (4,"_line_")},
+            {"title": "INSup", "key" : "lČO:", "dist": "DIČ:"},
+            {"title": "TIDSup", "key" : "DIČ:", "dist": "_next_"},
+            {"title": "IBNSup","key" : "IBAN", "dist": [2,"_line_"]} ,
+            {"title": "BICSup", "key" : "Číslo", "dist": "-1"},
+            # {"title": "PayRef", "key" : "úhrady:", "dist": "_line_"},
 
-    [
-            {"title": "ToInv", "key" : "úhradě" , "dist" : "_rest_", "preprocessor" : "_num_", "postprocessor" : "_test_"},
+            {"title": "BaAcSup", "key" : 'účtu:', "dist": "1"},
+            {"title": "BaCoSup", "key" : "účtu:", "dist": "2"},
+            {"title": "PayRef", "key" : "úhrady:", "dist": "_line_"},
 
-    ]
-]
+            ],
+
+            [
+            {"title": "VaSym","key" : "Variabilní", "dist": "2","postprocessor":"check_num"},
+            {"title": "KoSy","key" : "Konstantní", "dist":"2","postprocessor":"check_num"},
+            # {"title": "SpSym","key" : "Spec.", "dist":"2","postprocessor":"check_num"},
+            {"title": "INCus", "key" : "DIČ:", "dist": "-1"},
+            {"title": "TIDCus", "key" : "DIČ:", "dist": "1"},
+            {"title": "NaCus", "key" : "DIČ:", "dist": (1,"_line_")},
+            {"title": "StCus", "key" : "DIČ:", "dist": (2,"_line_")},
+            {"title": "PoCus", "key" : "DIČ:", "dist": (3,"_line_"),"postprocessor":"_postcode_"},
+            {"title": "CiCus", "key" : "DIČ:", "dist": (3,"_line_"),"postprocessor":"_cityname_"},
+
+            ],
+
+            [
+            {"title": "IssDay", "key" : "vystavení:", "dist": "_line_"},#
+            {"title": "PayDay", "key" : "splatnosti:", "dist": "_line_"},#
+            {"title": "VATDay", "key" : "platby:", "dist": "_line_"},#
+            ],
+
+
+            [
+            {"title": "ToInv", "key" : 'úhradě', "dist": [2,"_line_"]},
+            {"title": "InCur", "key" : 'úhradě', "dist": "_next_"},
+
+
+
+            ],
+
+            # [
+            # {"title": "AdDel", "key" : "určení:", "dist": "_rest_"},
+
+            #     #[(2000, 1435), (1930, 753)]
+            # ],
+
+            # [
+            # {"title": "OrdNum", "key" : "Objednávka:", "dist": "_line_"},#
+
+            # ],
+
+            # #the part for the VAT and accounting related sections
+            # [
+
+            # {"title": "VATRat0", "key" : 0, "dist": "_rest_","postprocessor":"VATRat0"},
+            # {"title": "VATRat10", "key" : 0, "dist": "_rest_","postprocessor":"VATRat10"},
+            # {"title": "VATRat15", "key" : 0, "dist": "_rest_","postprocessor":"VATRat15"},
+            # {"title": "VATRat21", "key" : 0, "dist": "_rest_","postprocessor":"VATRat21"},
+
+            # ],
+
+            # [
+            # {"title": "ToInv", "key" : 'úhradě', "dist": "Zálohy"},
+            # {"title": "AddPay", "key" : 'Zálohy', "dist": "Zbývá"},
+            # {"title": "ToPay", "key" : 'uhradit', "dist": [2,"_rest_"]},
+            # {"title": "InCur", "key" : 'uhradit', "dist": "_next_"},
+
+            # ],
+
+            # [
+            # {"title": "ExVat0", "key" : '-', "dist": {"LINE":0},"postprocessor":"ExVat0"},
+            # {"title": "ExVat10", "key" : '-', "dist": {"LINE":1},"postprocessor":"ExVat10"},
+            # {"title": "ExVat15", "key" : '-', "dist": {"LINE":2},"postprocessor":"ExVat15"},
+            # {"title": "ExVat21", "key" : '-', "dist": {"LINE":3},"postprocessor":"ExVat21"},
+
+
+            # ],
+
+
+            ]
+#         
+
 ############
 
-coordinates_5 = [[(0, 26), (1973, 1129)],[(5, 1794), (1990, 1171)],[(1965, 223), (2066, 2777)],[(2413, 8130), (1495, 765)]]
 
+# ############
 
-layout_5 = [
-    
-    [
-
-       
-            {"title": "NaSupRe", "key" : "Dodává:", "dist": "_line_"},
-            {"title": "AddUseTy", "key" : "Dodává:" , "dist" : "Tel/Fax:" },
-            {"title": "INSuRe", "key" : "IČO:", "dist": "_next_"},
-            {"title": "TIDSupRe", "key" : "DIČ:", "dist": "_next_"},
-            # {"title": "BaAcSupRe", "key" : "účet", "dist": "2" },
-            # {"title": "VATDay", "key" : "plnění:", "dist": "_next_"},
-            # {"title": "IssDay", "key" : "vystavení:", "dist": "_next_"},
-            # {"title": "Telefon", "key" : "Telefony:", "dist": "_rest_"},
-
-
-
-
-    ],
-
-    [
-           {"title": "AddUseTy", "key" : "zboží/služby:" , "dist" : "GLN:" },
-
-#             {"title": "PayDay", "key" : "SPLATNOSTI:", "dist": "_next_"},
-#             {"title": "ToInv", "key" : "ÚHRADĚ:" , "dist" : "DATUM" },
-#             {"title": "VaSym", "key" : "Variabilní" , "dist" : '2' },
-#             {"title": "KoSy", "key" : "Konstantní" , "dist" : '2' },
-#             {"title": "INUseTy", "key" : "IČ:" , "dist" : '_next_' },
-#             {"title": "TIDUseTy", "key" : "DIČ:" , "dist" : '_next_' },
-#             {"title": "NaUseTy", "key" : "IČ:" , "dist" : [2,'_line_'] },
-#             {"title": "AddUseTy", "key" : "IČ:" , "dist" : [2,'Tel.:'] },
-#             {"title": "IssDay", "key" : "vystavení:", "dist": "_next_"},
-#             {"title": "VATDay", "key" : "platby:", "dist": "_next_"},
-            # {"title": "IssDay", "key" : "vystavení:", "dist": "_next_"},
-
- 
-    ],
-    [
-            {"title": "InNum", "key" : "FAKTURY/VARIABILNÍ" , "dist" : '2' },
-            {"title": "BaAcSupAc", "key" : "Banka:" , "dist" : 'Konstantní' },
-            {"title": "VaSym", "key" : "FAKTURY/VARIABILNÍ" , "dist" : '2' },
-            {"title": "KoSy", "key" : "Konstantní" , "dist" : '_next_' },
-            {"title": "NaCusTy", "key" : "dokladu:" , "dist" : "Splatnost" },
-            #   {"title": "AdCus", "key" : "Odběratel" , "dist" :  [2,'IČO:']},
-            #   {"title": "INUseTy", "key" : "IČO:" , "dist" : '_next_' },
-            #   {"title": "TIDUseTy", "key" : "DIČ:" , "dist" : '_next_' },
-            {"title": "PayDay", "key" : "Splatnost", "dist": "2"},
-            {"title": "IssDay", "key" : "vystavení:", "dist": "_next_"},
-            {"title": "VATDay", "key" : "plnění:", "dist": "_next_"},
-  
-    ],
-
-    [
-            {"title": "ToInv", "key" : "ÚHRADĚ" , "dist" : "_rest_"},
-    ]
-
-     
+coordinates_5 = [
+[(78, 35), (1209, 516)],
+[(2951, 183), (1130, 228)],
+[(140, 808), (858, 464)],
+[(1296, 262), (1182, 1041)],
+[(87, 1172), (990, 2*438)],
+[(78, 1557), (1542, 823)],
+[(1497, 1575), (1016, 560)],
+[(2601, 1487), (1261, 867)],
+["čiastka", (1673, 150),[30,-5]],
+["uhradiť", (1600, 150),[30,-5]],
 ]
 
+layout_5 = [
+        [
+            {"title": "CrNo", "key" : 0, "dist": "_line_","postprocessor":"_dobropis_"},
+
+    ],
+    [
+            {"title": "InNum", "key" : 0, "dist": "_rest_","postprocessor":"_denoise_"},
+
+    ],
+
+    [
+            {"title": "NaSup", "key" : "-", "dist": {"LINE":0}},
+            {"title": "StSup", "key" : "-", "dist": {"LINE":1}},
+            {"title": "PoSup", "key" : "-", "dist": {"LINE":2}  ,"postprocessor":"_postcode_"},
+            {"title": "CiSup", "key" : "-", "dist": {"LINE":2}  ,"postprocessor":"_cityname_"},
+    ],
+
+    [
+                    
+            {"title": "INSup", "key" : "IČO:", "dist": "1"},
+            {"title": "TIDSup", "key" : "DPH:", "dist": "1"},
+    ],
+    [
+                    
+            {"title": "KoSy","key" : "Konštantný", "dist": '1',"postprocessor":"check_num"},
+            {"title": "VaSym","key" : "Variabilný", "dist":'1',"postprocessor":"check_num"},
+            {"title": "SpSym","key" : "Špecifický", "dist":'1',"postprocessor":"check_num"},
+            
+
+    ],
+    [
+            {"title": "BaAcSup", "key" : "faktůry", "dist": "1"},
+            {"title": "BaCoSup", "key" : "IBAN", "dist": "-1"},
+            {"title": "IBNSup","key" : "IBAN", "dist": "1"},
+            {"title": "BICSup", "key" : "SWIFT", "dist": "1"},
+    ],
+
+    [
+            {"title": "IssDay", "key" : "Vystavenia", "dist": "_line_"},#
+            {"title": "PayDay", "key" : "Splatnosti", "dist": "_line_"},#
+            {"title": "VATDay", "key" : "plnenia", "dist": "_line_"},#
+    ],
+    [
+            {"title": "INCus", "key" : "IČO:", "dist": "1","postprocessor":"check_num"},
+            {"title": "TIDCus", "key" : "DIČ:", "dist": "1","postprocessor":"check_num"},
+            {"title": "NaCus", "key" : "-", "dist": {"LINE":1}},
+            {"title": "StCus", "key" : "-", "dist": {"LINE":2}},
+            {"title": "PoCus", "key" :  "-", "dist": {"LINE":3},"postprocessor":"_postcode_"},
+            {"title": "CiCus", "key" : "-", "dist": {"LINE":3},"postprocessor":"_cityname_"},
+    ],
+            [
+            {"title": "ToInv", "key" : 0, "dist": "1"},
+            ],
+
+            [
+            {"title": "ToPay", "key" : '-', "dist": {"LINE":0}},
+
+            ],
+
+]
 ################################################################
 list_of_layouts = [layout_1,layout_2,layout_3,layout_4,layout_5]
 list_of_coordinates = [coordinates_1,coordinates_2,coordinates_3,coordinates_4,coordinates_5]
-page_res = [[4134,5846],[4134,5846],[4134,5846],[4134,5846],[4132,11696]]
+page_res = [[4134,5846],[4134,5846],[4134,5846],[4134,5846],[4132,5846]]
 
 
 def segmap(layout_query):
@@ -273,22 +581,39 @@ def scaler(base_res,new_res,input_list):
     x_ratio = new_res[0] / base_res[0]
     y_ratio = new_res[1] / base_res[1]
 
-    invert = False
 
     for item in input_list:
-        if isinstance(item[0][1], str) and isinstance(item[0][0], str):
-            invert = True
+        remove_lines = False
+        if isinstance(item[0][1], str) and isinstance(item[0][0], str) and isinstance(item[0],tuple):
+            remove_lines = True
 
-        x = int( x_ratio * int(item[0][0])  ) 
-        y = int( y_ratio * int(item[0][1])  ) 
-        w = int( x_ratio * item[1][0]  ) if isinstance(item[1][0], int) else item[1][0] # do not scale if it is until line
+        x = int( x_ratio * int(item[0][0])  ) if isinstance(item[0],tuple) else item[0]
+        y = int( y_ratio * int(item[0][1])  ) if isinstance(item[0],tuple) else None
+
+        # precenage_coffecies_w = 1 if not isinstance(item[1],list) else item[1][0]
+        # precenage_coffecies_h = 1 if not isinstance(item[1],list) else item[1][1]
+
+        if isinstance(item[1],list): # height and width was besed on percentage
+            item[1][0] = int(item[1][0] * new_res[0] / 100)
+            item[1][1] = int(item[1][1] * new_res[1] / 100)
+
+
+        w = int( x_ratio * item[1][0]  ) if isinstance(item[1][0], int) else item[1][0]# do not scale if it is until line
         h = int( y_ratio * item[1][1]  ) if isinstance(item[1][0], int) else item[1][1]
         
-        if (invert):
+        if (remove_lines == True):
             x = str(x)
             y = str(y)
-        new_list.append([(x,y),(w,h)])
-    
+            
+
+
+        final_scaled = [(x,y),(w,h)] if y is not None else [x,(w,h)]
+
+        if len(item)==3:
+            zone = item[2]
+            final_scaled.append(zone)
+
+        new_list.append(final_scaled)
     return new_list
 
 def coordinates(coordinate_query,shape):

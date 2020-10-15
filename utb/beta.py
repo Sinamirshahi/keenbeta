@@ -66,7 +66,7 @@ def rotate_tes(image):
         rotated = ndimage.rotate(image, float(angle))
     return rotated
 
-def rotate(image):
+def rotate(image,major = False):
     # convert the image to grayscale and flip the foreground
     # and background to ensure foreground is now "white" and
     # the background is "black"
@@ -106,8 +106,9 @@ def rotate(image):
         flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
 
 
-
-    return rotate_tes(rotated)
+    if major == True:
+        rotated = rotate_tes(rotated)
+    return rotated
 
 
 def image_convert(path_in , path_out='jpg_converted', absolute_path = False , prefered_dpi = 500 , rotatation_fix = False):
@@ -143,7 +144,7 @@ def image_convert(path_in , path_out='jpg_converted', absolute_path = False , pr
             #append to the list and save the file
             output_list.append(save_path)
             if rotatation_fix == True:
-                page = Image.fromarray(rotate(page))
+                page = Image.fromarray(rotate(page,major=False))
             page.save(save_path, 'JPEG')
 
     return (output_list)
@@ -242,7 +243,110 @@ def segmentizer(image_list,segmentaion_coordinates):
     return segments
 
 
+################################################################
+def segmentizer_beta(image_list,segmentaion_coordinates,stuff=[]):
 
+
+    segments = [] # list of cropped segments
+    for image in image_list:
+        temp_image = image.copy()
+        # image = cv2.imread(image)
+        for coordinates in segmentaion_coordinates:
+            x_margin_rate = -5
+            y_margin_rate = -5
+
+            image = temp_image
+            remove_lines = False
+
+            area = coordinates[1]
+
+            if len(coordinates) == 3 and isinstance(coordinates[2],list): #find the region
+                # print("Margin ",coordinates)
+                x_margin_rate = coordinates[2][0]
+                y_margin_rate = coordinates[2][1]
+                coordinates.pop(2)
+
+            if len(coordinates) == 3 and isinstance(coordinates[2],int): #find the region
+                zone = coordinates[2]
+
+                if zone == 1:
+                    starting_point = (0,0)
+                    mass = (int(image.shape[1]/2),int(image.shape[0]/2))
+
+                elif zone == 2:
+                    starting_point = (int(image.shape[1]/2),0)
+                    mass = (int(image.shape[1]/2),int(image.shape[0]/2))
+
+                elif zone == 3:
+                    starting_point = (0,int(image.shape[0]/2))
+                    mass = (int(image.shape[1]/2),int(image.shape[0]/2))
+
+                if zone == 4:
+                    starting_point = int(image.shape[1]/2),int(image.shape[0]/2)
+                    mass = int(image.shape[1]/2),int(image.shape[0]/2)
+
+
+
+                image = region_of_interest(image, starting_point=starting_point, area=mass)
+
+                
+                coordinates.pop(2)
+                ddata = data_extract([remove_borders(image)])[0]
+                seg_texts = ddata["text"]
+                seg_conf = ddata["conf"]
+                seg_y = ddata["top"]
+                seg_x = ddata["left"]
+                seg_w = ddata["width"]
+                seg_h = ddata["height"]
+
+                stuff.clear()
+                stuff = [seg_texts,seg_conf,seg_x,seg_y,seg_w,seg_h]
+
+                # print("tests ",seg_texts)
+                # cv2.imshow("s",image)
+                # cv2.waitKey(0)
+                # exit()
+            if isinstance(coordinates[0], str) and not isinstance(coordinates[0], tuple):
+                x_margin = int(coordinates[1][0] * x_margin_rate/100) if not isinstance(coordinates[1][0],str) else 20
+                y_margin = int(coordinates[1][1] * y_margin_rate/100) if not isinstance(coordinates[1][1],str) else 20
+                # print("marg bros ",x_margin,y_margin)
+                try:
+                    pos = get_postition(coordinates[0],stuff[0],
+                    stuff[2],stuff[3])
+                    coordinates[0] = [pos[0]+x_margin, pos[1]+y_margin] # find the starting point
+
+                except:
+                    continue
+
+
+            if isinstance(coordinates[0][0], str) and isinstance(coordinates[0][1], str) and isinstance(coordinates[0],tuple):
+                remove_lines = True
+                coordinates[0] = list(coordinates[0])
+                coordinates[0][0] = int(coordinates[0][0])
+                coordinates[0][1] = int(coordinates[0][1])
+                coordinates[0] = tuple(coordinates[0])
+
+            if isinstance(coordinates[1][0], str) and isinstance(coordinates[1][1], str):
+                
+                mass , _ = bound(image=image, starting_point=coordinates[0],v_line=int(coordinates[1][0]),
+                    h_line= int(coordinates[1][1]))
+
+
+
+            roi  = region_of_interest(image,starting_point=coordinates[0],area=area) 
+            
+
+
+            if (remove_lines == True):
+                roi = remove_borders(roi.copy())
+                #remove_lines = False
+
+            segments.append(roi)
+
+
+    return segments
+
+################################################################
 def data_extract(image_list, min_conf = 0 , tesserect_config="--psm 1", set_env=False, fuzzy_match = False , guess_list=[] , to_jason = False, rotatation_fix = False):
     if set_env:
         set_environment() # set the folder where trained models for tesserect exist the default is the "models" folder
@@ -333,12 +437,25 @@ def crop_sentence(sentence_as_list, start ,distance = 1000000 , stop = None , se
     if sentence_mode is True, it will return a sentence in the form of string 
     rather than a list
     '''
-
     sentence_list = sentence_as_list.copy()
+
+    if distance == -1 or distance == -2: #dictionary passed
+        if distance == -1:
+            direction = 0
+        elif distance == -2:
+            direction = 1
+
+        data = line_split(text_list=sentence_list,x_list=start[1],y_list=start[2],axis= direction )[start[0]]
+        return data
+
     if hot:
         templist=[]
+        # print("Stp ",start)
+        # print("ls ",sentence_list)
+        # print("DST ",distance)
         val = hot_word(list_of_words=sentence_list,stop_word=start,distance=int(distance))["next"]
-        templist.append(val)
+        if val is not None:
+            templist.append(val)
         return templist
         
     if stop == None:
@@ -398,7 +515,6 @@ def compare_images(input_image, list_of_images,method): #used by find_layout()
             print("Method should be SSIM or MSE")
             return -1
     return diff
-
 
 def process_image(list1,base_resolution): #used by find_layout()
     resized = []
@@ -472,13 +588,13 @@ def process_image(list1,base_resolution): #used by find_layout()
 
 
 
-def find_layout(image_to_check, template_folder, base_resolution = (300,400), method = "SSIM"):
+def find_layout(image_to_check, template_folder, base_resolution = (300,400), method = "SSIM", get_struct = False):
 
         images_path = glob.glob(os.path.join(os.getcwd(),template_folder,"*.jpg")) 
         images = []
         for item in images_path:
                 img = cv2.imread(item)
-                struct = assembler(image=img)
+                struct = assembler(image=img) if get_struct is True else img
                 images.append( struct )
 
 
@@ -489,7 +605,7 @@ def find_layout(image_to_check, template_folder, base_resolution = (300,400), me
 
         case = image_to_check.copy()
 
-        case = assembler(case)
+        case = assembler(case) if get_struct is True else case
 
         black_and_white=cv2.cvtColor(case, cv2.COLOR_BGR2GRAY)
         base = cv2.resize(black_and_white, base_resolution , interpolation = cv2.INTER_AREA)
@@ -543,7 +659,84 @@ def find_layout(image_to_check, template_folder, base_resolution = (300,400), me
         
         return (layout)
 
+###################
 
+
+def find_layout_beta(image_to_check, template_folder, base_resolution = (300,400), method = "SSIM", get_struct = False):
+
+        images_path = glob.glob(os.path.join(os.getcwd(),template_folder,"**","*.jpg"),recursive=True) 
+        images = []
+        for item in images_path:
+                img = cv2.imread(item)
+                struct = assembler(image=img) if get_struct is True else img
+                images.append( struct )
+
+
+
+        resized_images = process_image(images,base_resolution)
+
+
+
+        case = image_to_check.copy()
+
+        case = assembler(case) if get_struct is True else case
+
+        black_and_white=cv2.cvtColor(case, cv2.COLOR_BGR2GRAY)
+        base = cv2.resize(black_and_white, base_resolution , interpolation = cv2.INTER_AREA)
+
+        compared = compare_images(base,resized_images,method)
+
+        compared_sorted = sorted(compared,reverse=True)
+
+        path_sorted = []
+        for each in compared_sorted:
+                    temp = images_path[compared.index(each)]
+                    path_sorted.append(temp)
+
+        path = path_sorted[0]
+
+
+
+        # compared_mse = compare_images(base,resized_images,"MSE")
+        # compared_mse_sorted = sorted(compared_mse)
+
+        # path_mse = []
+        # for each in compared_mse_sorted:
+        #             temp = images_path[compared_mse.index(each)]
+        #             path_mse.append(temp)
+
+
+        #new method
+        # base_number_of_elements = layout_estimator(case)
+        #cv2.imshow("s",im)
+        #cv2.imwrite("vvv.jpg",im)
+        # cv2.waitKey()
+        # print(base_number_of_elements)
+        # exit()
+
+        # for i in resized_images:
+        #     print(i.shape)
+        #     i = cv2.cvtColor(i,cv2.COLOR_GRAY2RGB)
+            
+        #     _ , shape_elements = shape_counter(i)
+        #     print(shape_elements)
+        #     if base_number_of_elements == shape_elements:
+        #         print("hello")
+        #         print(images_path[resized_images.index(i)])
+
+        # exit()
+
+        # path = images_path[compared.index(max(compared))]
+
+        # file_name = os.path.basename(path)
+        # name  =  os.path.dirname(path)
+        layout = os.path.basename(os.path.dirname(path))
+
+        
+        return (layout)
+
+
+####################
 def uncertain_detection(image_case, certaintity_percentage=30 , output = "checked"):
         image = image_case
         rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -839,8 +1032,33 @@ def assembler(image,thresh_line = 200 ):
     structure = cv2.bitwise_not(table_mask)
     structure = cv2.cvtColor(structure,cv2.COLOR_GRAY2RGB)
 
-    return image#structure
+    return structure
 
+def remove_borders(image,thresh_line = 10 ):
+    # Load image, grayscale, Gaussian blur, Otsu's threshold
+    # image = cv2.imread('test_data/img2.jpg')
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    blur = cv2.GaussianBlur(gray, (3,3), 0)
+    thresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+
+    # Detect horizontal lines
+    horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, ( int(image.shape[1]/thresh_line) ,1))
+    horizontal_mask = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, horizontal_kernel, iterations=1)
+
+    # Detect vertical lines
+    vertical_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1,int(image.shape[0]/thresh_line)))
+    vertical_mask = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, vertical_kernel, iterations=1)
+
+    # Combine masks and remove lines
+    table_mask = cv2.bitwise_or(horizontal_mask, vertical_mask)
+    image[np.where(table_mask==255)] = [255,255,255]
+
+
+    #save the images
+    structure = cv2.bitwise_not(table_mask)
+    structure = cv2.cvtColor(structure,cv2.COLOR_GRAY2RGB)
+
+    return image
 
 def layout_estimator(img):
 
@@ -946,7 +1164,7 @@ def image_convert_file(path_in , path_out='jpg_converted', absolute_path = False
             #append to the list and save the file
             output_list.append(save_path)
             if rotatation_fix == True:
-                page = Image.fromarray(rotate(page))
+                page = Image.fromarray(rotate(page,major=False))
             page.save(save_path, 'JPEG')
     
     if len(pages) > 1 :
@@ -1011,6 +1229,22 @@ def num_refine(text_list):
                 pass
     return (list(filter(None,text_list)))
 
+def postal_code_old(text_list):
+    #text_list = [ item.replace(",",".") for item in text_list ]
+    print("INSIDE POST ",text_list)
+
+
+    for index, item in enumerate(text_list):
+
+        if item != "":
+            
+            try: 
+                if isinstance(int(item), int) and isinstance(int(text_list[index+1]),int) and len(text_list[index]) == 3 and len(text_list[index]) == 2:
+                    text_list[index:index+2] = ([''.join(text_list[index:index+2])])
+            except:
+                pass
+    return (list(filter(None,text_list)))
+
 
 def image_combiner(list_of_image, axis = 0):
     
@@ -1034,3 +1268,97 @@ def semi_colon_refine(text_list):
             except:
                 pass
     return (text_list)
+
+
+
+def get_distance(item1,item2,text_list,x_list,y_list,w_list=[],h_list=[],consider_size = False ):
+
+    try:
+        item1_x = x_list[text_list.index(item1)]
+        item1_y = y_list[text_list.index(item1)]
+
+        item2_x = x_list[text_list.index(item2)]
+        item2_y = y_list[text_list.index(item2)]
+
+
+        x_diff = (item2_x - item1_x) if consider_size is False else (item2_x - (item1_x + w_list[text_list.index(item1)])  )
+        y_diff = (item2_y - item1_y) if consider_size is False else (item2_y - (item1_y + h_list[text_list.index(item1)])  )
+        
+
+        print ("item 1 : ",item1_x,item1_y)
+        print("item 2 : ",item2_x,item2_y)
+        print("w , h",(w_list[text_list.index(item1)]),(h_list[text_list.index(item1)]))
+    except:
+        return -1
+
+    return [x_diff,y_diff]
+
+def get_postition(item,text_list,x_list,y_list):#,w_list,h_list,consider_size = False ):
+    try:
+        item_x = x_list[text_list.index(item)]
+        item_y = y_list[text_list.index(item)]
+    except:
+        return -1
+
+    return [item_x,item_y]
+
+def line_split(text_list,x_list,y_list,thresh = 20 , axis = 0):
+    line_list = []
+    previous = y_list[0] if axis == 0 else x_list[0]
+
+    temp_list = []
+
+    for index,word in enumerate(text_list):
+        pos = y_list[index] if axis == 0 else x_list[index]
+    
+        if (pos-previous) > thresh:
+            line_list.append(temp_list.copy())
+            temp_list.clear()
+        temp_list.append(word)
+        previous = pos
+    
+    if len(temp_list) > 0: #buffer exist because of last line
+        line_list.append(temp_list.copy())
+
+        
+    return line_list
+
+def postal_code(text,post_code_or_city):
+    text_list = text.copy()
+
+    for index, item in enumerate(text_list):
+        if item != "":
+            
+            try:
+                num1 = isinstance(int(item), int)
+            except:
+                num1 = False
+            try:
+                num2 = isinstance(int(text_list[index+1]),int)
+            except:
+                num2 = False
+            try: 
+                # print(num1,num2,len(text_list[index]),len(text_list[index+1]))
+                if num1 and num2 and len(text_list[index]) == 3 and len(text_list[index+1]) == 2:
+                    text_list[index:index+2] = ([''.join(text_list[index:index+2])])
+            except:
+                pass
+            
+            try:
+                thresh = 5
+                if text_list[index][0] == "0":
+                    thresh=4
+
+                postcode = int(text_list[index])
+                
+                if len(str(postcode)) == thresh:
+                    if post_code_or_city == 0:
+                        return [str(postcode)] if thresh ==5 else ["0"+str(postcode)]
+                    elif post_code_or_city == 1:
+                        return [text_list[index+1]]
+
+                        
+            except:
+                pass
+            
+    return -1
