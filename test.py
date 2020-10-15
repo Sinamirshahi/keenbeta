@@ -330,7 +330,6 @@ set_environment()
 input_file = "/home/non/KeenData/zip/MRP/Kombinace DPH +ne DPH/BAY20101019220.pdf"
 #input_file = "/home/non/KeenData/zip/Obdobné layouty MONEY S4, S5/Trénovací/BAY20101021070.pdf"
 
-input_file = "/home/non/KeenData/zip/Money S3/Přenesená DPH/BAY20100713142.pdf"
 
 
 number_of_pages,path = image_convert_file(path_in=input_file,absolute_path=True,rotatation_fix=True)
