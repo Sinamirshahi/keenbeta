@@ -337,7 +337,7 @@ number_of_pages,path = image_convert_file(path_in=input_file,absolute_path=True,
 
 
 
-cat = "/home/non/KeenReader/MasterPool/" #KEEDDAT for new style of
+cat = "MasterPool" #KEEDDAT for new style of
 
 if number_of_pages > 1:
         img = image_combiner([path[0],path[-1]])
