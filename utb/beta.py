@@ -1135,7 +1135,7 @@ def image_convert_file(path_in , path_out='jpg_converted', absolute_path = False
     @param prefered_dpi: the prefered dpi of output image files
     
     '''
-    cwd = os.getcwd() #getting curent woeking directory
+    cwd = os.getcwd() #getting curent working directory
 
     # list_pdf = glob.glob(os.path.join(cwd,path_in,"*.pdf")) #getting the list of pdf files inside the input folder
     # list_PDF = glob.glob(os.path.join(cwd,path_in,"*.PDF")) #getting the list of pdf files inside the input folder

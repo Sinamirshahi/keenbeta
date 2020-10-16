@@ -340,14 +340,9 @@ cat = "MasterPool" #KEEDDAT for new style of
 
 if number_of_pages > 1:
         img = image_combiner([path[0],path[-1]])
-        # cat = "lay_templates_multiple"
-        # cv2.imwrite("koleksion.jpg",img)
-        # print("done")
-        # exit()
 
 else:
         img = cv2.imread(path)
-        #defferent scenarois and layouts
 
 # cv2.imwrite("rotated_1.jpg",img)
 # exit()
