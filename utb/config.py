@@ -5,7 +5,7 @@
 
 coordinates_1 = [[(0, 0), (1851, 429)],[(78, 35), (1957, 2381)],[(131, 1549), (1702, 341)],[(3017, 0), (1106, 315)],[(2017, 271), (1921, 525)],
 [(2035, 1444), (1868, 438)],[(2044, 1803), (1903, 665)],['Rekapitulace', (2307, 858)],['Celkem', (1614, 674),4],
-[(1087, 3750), (772, 1532)]]
+[(1087, 3750), (772, 1532)],[(5, 2692), (2295, 2791)]]
 
 #Rekapitulace (816, 1269)  jame kharid ('2412', '3668')
 layout_1 = [
@@ -51,6 +51,8 @@ layout_1 = [
             {"title": "PoCus", "key" : "sídlo:", "dist": (2,"_line_"),"postprocessor":"_postcode_"},
             {"title": "CiCus", "key" : "sídlo:", "dist": (2,"_line_"),"postprocessor":"_cityname_"},
             {"title": "CoCus", "key" : "sídlo:", "dist": (3,"_line_")},
+            {"title": "INCus", "key" : "DIČ:", "dist": "-1"},
+            {"title": "TIDCus", "key" : "DIČ:", "dist": "1"},
 
             ],
 
@@ -79,7 +81,7 @@ layout_1 = [
 
             [
             {"title": "ToInv", "key" : 'úhradě', "dist": "Zálohy"},
-            {"title": "AddPay", "key" : 'Zálohy', "dist": "Zbývá"},
+            {"title": "AdPay", "key" : 'Zálohy', "dist": "Zbývá"},
             {"title": "ToPay", "key" : 'uhradit', "dist": [2,"_rest_"]},
             {"title": "InCur", "key" : 'uhradit', "dist": "_next_"},
 
@@ -91,9 +93,13 @@ layout_1 = [
             {"title": "ExVat15", "key" : '-', "dist": {"LINE":2},"postprocessor":"ExVat15"},
             {"title": "ExVat21", "key" : '-', "dist": {"LINE":3},"postprocessor":"ExVat21"},
 
+        
 
             ],
+            [
+            {"title": "TrVAT", "key" : 0, "dist": "_rest_","postprocessor":"TrVAT_check"},
 
+            ],
 
             ]
 #             {"title": "Fax", "key" : "Fax:", "dist": "_next_"},
@@ -132,6 +138,7 @@ coordinates_2 = [[(2112, 27), (1985, 532)],[(27, 27), (1742, 1308)],
 [(3419, 1860), (508, 1673)],['Sazba',(236, 428)],
 ['Základ', (400, 429),[-25,-5]],
 ['Celkem', (605, 700),4],
+[(5, 2692), (2295, 2791)]
 ]
 
 #Rekapitulace (816, 1269)  jame kharid ('2412', '3668')
@@ -253,7 +260,10 @@ layout_2 = [
 
             ],
 
+            [
+            {"title": "TrVAT", "key" : 0, "dist": "_rest_","postprocessor":"TrVAT_check"},
 
+            ],
             ]
 ##############################################################
 
@@ -278,6 +288,8 @@ coordinates_3 = [
     ['úhradě:', (650, 120),[50,-10]],
 
     ['uhradit:', (650, 120),[50,-10]],
+    [(5, 2692), (2295, 2791)]
+
     #uhradit:
 ]
 
@@ -375,6 +387,11 @@ layout_3 = [
 
             ],
 
+            [
+            {"title": "TrVAT", "key" : 0, "dist": "_rest_","postprocessor":"TrVAT_check"},
+
+            ],
+
 
 ]
 #############################################################
@@ -384,6 +401,8 @@ coordinates_4 = [
     [(2014, 166), (2014, 1181)],
     [(2023, 1452), (2040, 464)],
     [(2102, 1549), (1988, 2546)],
+    [(5, 2692), (2295, 2791)]
+
     ]
 
 
@@ -438,6 +457,11 @@ layout_4 = [
             {"title": "InCur", "key" : 'úhradě', "dist": "_next_"},
 
 
+
+            ],
+
+            [
+            {"title": "TrVAT", "key" : 0, "dist": "_rest_","postprocessor":"TrVAT_check"},
 
             ],
 
@@ -499,6 +523,8 @@ coordinates_5 = [
 [(2601, 1487), (1261, 867)],
 ["čiastka", (1673, 150),[30,-5]],
 ["uhradiť", (1600, 150),[30,-5]],
+[(5, 2692), (2295, 2791)]
+
 ]
 
 layout_5 = [
@@ -560,6 +586,11 @@ layout_5 = [
 
             ],
 
+            [
+            {"title": "TrVAT", "key" : 0, "dist": "_rest_","postprocessor":"TrVAT_check"},
+
+            ],
+
 ]
 ################################################################
 list_of_layouts = [layout_1,layout_2,layout_3,layout_4,layout_5]
@@ -581,6 +612,7 @@ def scaler(base_res,new_res,input_list):
     x_ratio = new_res[0] / base_res[0]
     y_ratio = new_res[1] / base_res[1]
 
+    ##
 
     for item in input_list:
         remove_lines = False
@@ -622,8 +654,11 @@ def coordinates(coordinate_query,shape):
     new_res[1],new_res[0] = new_res[0] , new_res [1]
     for counter, coordinate in enumerate(list_of_coordinates):
         if coordinate_query == (counter+1):
-            return scaler(base_res=page_res[coordinate_query-1],new_res=new_res,input_list = coordinate) # Scale it to the resulution
-    
+            # print(coordinate)
+            image_data = scaler(base_res=page_res[coordinate_query-1],new_res=new_res,input_list = coordinate) # Scale it to the resulution
+            # print(image_data)
+            # exit()
+            return image_data
     #print("err")
     return -1
 

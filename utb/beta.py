@@ -667,14 +667,12 @@ def find_layout_beta(image_to_check, template_folder, base_resolution = (300,400
         images_path = glob.glob(os.path.join(os.getcwd(),template_folder,"**","*.jpg"),recursive=True) 
         images = []
         for item in images_path:
-                img = cv2.imread(item)
+                img = cv2.resize(cv2.imread(item), base_resolution , interpolation = cv2.INTER_AREA)
                 struct = assembler(image=img) if get_struct is True else img
                 images.append( struct )
 
 
-
         resized_images = process_image(images,base_resolution)
-
 
 
         case = image_to_check.copy()
@@ -695,6 +693,10 @@ def find_layout_beta(image_to_check, template_folder, base_resolution = (300,400
 
         path = path_sorted[0]
 
+        
+        #for the test
+        # print ("Similarity index ",path_sorted)
+        # print(" similarity number : ",compared_sorted)
 
 
         # compared_mse = compare_images(base,resized_images,"MSE")
@@ -732,6 +734,50 @@ def find_layout_beta(image_to_check, template_folder, base_resolution = (300,400
         # name  =  os.path.dirname(path)
         layout = os.path.basename(os.path.dirname(path))
 
+        
+        return (layout)
+
+
+#####################
+
+
+def find_layout_beta2(image_to_check, template_folder, base_resolution = (300,400), method = "SSIM", get_struct = False):
+
+        images_path = glob.glob(os.path.join(os.getcwd(),template_folder,"**","*.jpg"),recursive=True) 
+        images = []
+        for item in images_path:
+                img = cv2.imread(item)
+                struct = assembler(image=img) if get_struct is True else img
+                images.append( struct )
+
+
+
+        resized_images = process_image(images,base_resolution)
+
+
+
+        case = image_to_check.copy()
+
+        case = assembler(case) if get_struct is True else case
+
+        black_and_white=cv2.cvtColor(case, cv2.COLOR_BGR2GRAY)
+        base = cv2.resize(black_and_white, base_resolution , interpolation = cv2.INTER_AREA)
+
+        compared = compare_images(base,resized_images,method)
+
+        compared_sorted = sorted(compared,reverse=True)
+
+        path_sorted = []
+        for each in compared_sorted:
+                    temp = images_path[compared.index(each)]
+                    path_sorted.append(temp)
+
+        vote_list = []
+        for counter in range(5):
+            vote = os.path.basename(os.path.dirname(path_sorted[counter]))
+            vote_list.append(int(vote))
+        print(vote_list)
+        layout = max(set(vote_list), key = vote_list.count)
         
         return (layout)
 

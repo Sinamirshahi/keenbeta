@@ -3,6 +3,13 @@ from utb.beta import segmentizer,crop_sentence,splitter,barcode_reader,watermark
 from utb.beta import semi_colon_refine,set_environment,postal_code,remove_borders
 from utb.config import segmap,coordinates
 import cv2,numpy as np
+import argparse
+
+ap = argparse.ArgumentParser()
+ap.add_argument("-f", "--file", required=False,
+	help="path to pdf file")
+
+args = vars(ap.parse_args())
 
 def confidence_calculator(list_of_words,list_of_conf,sentence,threshold = 50):
         counter = 0
@@ -43,7 +50,8 @@ def same_line(key,list_of_words,list_of_positions):
         
         for pos in (cut_position_list):
 
-                if abs( pos - prev_pos) < 50:
+                if abs( pos - prev_pos) < int(img.shape[0]/116):
+                        # print("GOLDEN ",int(img.shape[0]/116))
                         distance = distance + 1
                 else:
                         break
@@ -65,7 +73,7 @@ def multi_line(key,list_of_words,list_of_positions,which_line=0):
         start_key = key
         for word, pos in  zip(cut_word_list,cut_position_list):
 
-                if abs( pos - prev_pos) > 50: #line break
+                if abs( pos - prev_pos) > int(img.shape[0]/116): #line break
                         counter = counter +1 
                         start_key = word
                         distance = same_line(word,cut_word_list,cut_position_list) 
@@ -220,6 +228,12 @@ def exVat(word_list,num):
     except:
         return None
 
+def TrVAT_check(list_in):
+        if "odvede" or "zákazník":
+                return ["1"]
+        else:
+                return ["0"]
+
 
 
 def preprocessor_handler(triggers,list_in):
@@ -311,12 +325,18 @@ def postprocessor_handler(triggers,list_in):
                         #print("RATE ",rate)
                         #print("LIST IN ",list_in)
                         list_in = exVat(list_in,rate)
+
+                elif "TrVAT_check" in trigger:
+                        list_in = TrVAT_check(list_in)
+
                 elif trigger == "_denoise_":
                         list_in = remove_noise(list_in)
 
         return list_in
 
+
 safe = True
+save_logs_into_file = False
 set_environment()
 
 #ABRA
@@ -327,28 +347,79 @@ set_environment()
 #MRP
 #input_file = "/home/non/KeenData/zip/Obdobné layouty MONEY S4, S5/Trénovací/BAY20101109360.pdf"
 #input_file = "/home/non/KeenData/zip/Money S3/Kombinace přenesená DPH + ne/BAY20100713080.pdf"
-input_file = "/home/non/KeenData/zip/MRP/Kombinace DPH +ne DPH/BAY20101019220.pdf"
-#input_file = "/home/non/KeenData/zip/Obdobné layouty MONEY S4, S5/Trénovací/BAY20101021070.pdf"
+#input_file = "/home/non/KeenData/zip/MRP/Kombinace DPH +ne DPH/BAY20101019220.pdf"
+#input_file = "/home/non/KeenData/New Layouts/Faktury k testování/ABRA/Nedaňový doklad (neplátce)/AF Hla 83.pdf"
+
+
+# #TEST SAMPLES OF POWER BI
+#input_file = "/home/non/201125131132392-22320062918022.pdf"
+#input_file = "/home/non/KeenData/zip/MRP/Daňový doklad/22320062918022.pdf"
+
+# import glob
+# mydir = "/home/non/work/proSinu/layout5/sada-a-mix/"
+# file_list = glob.glob(mydir + r"*.pdf")
+
+
+# print(len(file_list)," PDF files has been found")
+# correct_list = []
+# wrong_list = []
+# for item in file_list:
+#         number_of_pages,path = image_convert_file(path_in=item,absolute_path=True,rotatation_fix=True)
+#         cat = "MasterPool" #KEEDDAT for new style of
+#         if number_of_pages > 1:
+#                 img = image_combiner([path[0],path[-1]])
+#         else:
+#                 img = cv2.imread(path)
+
+
+#         from utb.beta import find_layout_beta
+#         layout_number = int(find_layout_beta(img,template_folder=cat,get_struct=False))
+
+#         #FOR THE SAKE OF SPEED CORRECT IT LATER
+#         # layout_number = int(find_layout(img,template_folder=cat,get_struct=False))
+#         # layout_number = 5
+
+#         print("File name: ",item)
+#         print("the detected layout: ", layout_number)
+#         if (layout_number == 4 ):
+#                 correct_list.append(item)
+#         else:
+#                 temp_dict = {"name": item , "layout" : layout_number}
+#                 wrong_list.append(temp_dict)
 
 
 
-number_of_pages,path = image_convert_file(path_in=input_file,absolute_path=True,rotatation_fix=True)
+
+
+# print("the accuracy: ",(len(correct_list)/len(file_list)) * 100 )
+# print("wrong classification files ",wrong_list)
+
+
+# exit()
+
+
+# input_file = "/home/non/work/proSinu/layout1/sada-a-mix/2020_060.pdf"
+# input_file = "/home/non/work/proSinu/layout1/sada-a-mix/VF_0007_2020.pdf"
+
+
+input_file = args["file"]
+
+# input_file = "/home/non/KeenData/zip/ABRA/Nedaňový doklad (neplátce)/22320093012500.pdf"
+input_file = "/home/non/work/01/2012010911231-VF_0068_2020.pdf"
+if save_logs_into_file:
+        myfile = open(input_file+".txt",'w+') 
 
 
 
+number_of_pages,path = image_convert_file(path_in=input_file,absolute_path=True,rotatation_fix=True,prefered_dpi=500)
 cat = "MasterPool" #KEEDDAT for new style of
-
 if number_of_pages > 1:
         img = image_combiner([path[0],path[-1]])
-
 else:
         img = cv2.imread(path)
 
-# cv2.imwrite("rotated_1.jpg",img)
-# exit()
-# #img = watermark_remove(img)
-
-# exit()
+####
+#print(img.shape)
 from utb.beta import find_layout_beta
 layout_number = int(find_layout_beta(img,template_folder=cat,get_struct=False))
 
@@ -356,7 +427,8 @@ layout_number = int(find_layout_beta(img,template_folder=cat,get_struct=False))
 # layout_number = int(find_layout(img,template_folder=cat,get_struct=False))
 # layout_number = 5
 print("the detected layout: ", layout_number)
-
+if save_logs_into_file:
+        myfile.write("DETECTED LAYOUT : "+str(layout_number)+"\n")
 
 
 coordinate_based_on_word = False
@@ -369,7 +441,7 @@ for item in coordinates(layout_number,img.shape):
 # if isinstance(item[0],str):
 #EXPERIMENTAL PART FOR THE KEYWORD BASED SEGMENTATION
 stuff=[]
-if coordinate_based_on_word:
+if coordinate_based_on_word or True:
         ddata = data_extract([img])[0]
         seg_texts = ddata["text"]
         seg_conf = ddata["conf"]
@@ -380,7 +452,8 @@ if coordinate_based_on_word:
 
         stuff = [seg_texts,seg_conf,seg_x,seg_y,seg_w,seg_h]
 
-
+# print(seg_texts)
+# exit()
 # cv2.imshow("L",img)
 # cv2.waitKey(0)
 
@@ -394,7 +467,11 @@ if coordinate_based_on_word:
 from utb.beta import segmentizer_beta
 segs = segmentizer_beta([img],coordinates(layout_number,img.shape ),stuff = stuff)
 
-# #TEST 
+# for part in segs:
+#         cv2.imshow("d",part)
+#         cv2.waitKey(0)
+# exit()
+# # #TEST 
 # print(len(segs))
 # cv2.imshow("S",img)
 # cv2.waitKey(0)
@@ -402,10 +479,12 @@ segs = segmentizer_beta([img],coordinates(layout_number,img.shape ),stuff = stuf
 
 seg_data = data_extract(segs)
 
+# print(seg_data[0]["text"])
+# exit()
 
 
 # ##FOR TESTING
-# test_array = -1
+# test_array = 4
 # seg_texts = seg_data[test_array]["text"]
 # #seg_top = seg_data[-1]["top"]
 # #segment_texts = [x for x in seg_texts if len(x)>1]
@@ -678,6 +757,10 @@ for index,seg in enumerate(seg_keys):
                         pass
 
                 print("{0} : {1} : conf {2}".format(str(line["title"]),str(' '.join(var)),confidence   ))
+                if save_logs_into_file:
+                        data_for_file = "{0} : {1} : conf {2}".format(str(line["title"]),str(' '.join(var)),confidence   )
+                        myfile.write(data_for_file+"\n")
+
 
  except:
          continue
@@ -687,6 +770,12 @@ if qr == True:
 
         barcodes = barcode_reader(img)
         if ( len(barcodes) > 0 ):
-                print("QrCod : ",barcodes)   
-
+                print("QrCod : ",barcodes)
+                if save_logs_into_file:
+                        myfile.write("QrCod : "+str(barcodes)+"\n")
+                        
 print("PgCou : ",number_of_pages)
+if save_logs_into_file:
+        myfile.write("PgCou : "+str(number_of_pages)+"\n")
+        print("file saved ",input_file+".txt")
+        myfile.close()
