@@ -336,7 +336,7 @@ def postprocessor_handler(triggers,list_in):
 
 
 safe = True
-save_logs_into_file = True
+save_logs_into_file = False
 set_environment()
 
 #ABRA
