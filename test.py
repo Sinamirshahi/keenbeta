@@ -229,10 +229,10 @@ def exVat(word_list,num):
         return None
 
 def TrVAT_check(list_in):
-        if "odvede" or "zákazník":
-                return ["1"]
-        else:
-                return ["0"]
+        for index,item in enumerate(list_in):
+                if item == "odvede" and ("zákazník" in list_in[index+1]):
+                        return ["1"]
+        return ["0"]
 
 
 
@@ -336,7 +336,7 @@ def postprocessor_handler(triggers,list_in):
 
 
 safe = True
-save_logs_into_file = False
+save_logs_into_file = True
 set_environment()
 
 #ABRA
@@ -398,15 +398,14 @@ set_environment()
 # exit()
 
 
-# input_file = "/home/non/work/proSinu/layout1/sada-a-mix/2020_060.pdf"
 # input_file = "/home/non/work/proSinu/layout1/sada-a-mix/VF_0007_2020.pdf"
 
 
 input_file = args["file"]
 
 # input_file = "/home/non/KeenData/zip/ABRA/Nedaňový doklad (neplátce)/22320093012500.pdf"
-# input_file = "/home/non/work/01/201201114011408-BAY20061506550.pdf"
-# input_file = "/home/non/work/01/201201113919385-BAY20061506171.pdf"
+#input_file = "/home/non/work/01/201201114011408-BAY20061506550.pdf"
+#input_file = "/home/non/work/proSinu/layout1/sada-a-mix/2020_060.pdf"
 
 if save_logs_into_file:
         myfile = open(input_file+".txt",'w+') 
