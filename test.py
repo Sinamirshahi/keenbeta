@@ -414,7 +414,7 @@ input_file = args["file"]
 
 # input_file = "/home/non/KeenData/zip/ABRA/Nedaňový doklad (neplátce)/22320093012500.pdf"
 #input_file = "/home/non/work/01/201201113919385-BAY20061506171.pdf"
-input_file = "/home/non/KeenData/zip/MRP/Nedaňový doklad (neplátce)/BAY20101019480.pdf"
+#input_file = "/home/non/KeenData/zip/MRP/Nedaňový doklad (neplátce)/BAY20101019480.pdf"
 
 if save_logs_into_file:
         myfile = open(input_file+".txt",'w+') 
