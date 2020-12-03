@@ -398,10 +398,12 @@ layout_3 = [
 coordinates_4 = [
     [(2154, 148), (1620, 403)],
     [(297, 192), (1787, 1610)],
-    [(2014, 166), (2014, 1181)],
+    [(2019, 615), (1635, 889)],
+    [(2096, 658), (1396, 606)],
     [(2023, 1452), (2040, 464)],
     [(2102, 1549), (1988, 2546)],
-    [(5, 2692), (2295, 2791)]
+    [(5, 2692), (2295, 2791)],
+    ['Rozpis', (700, 500)],
 
     ]
 
@@ -410,39 +412,44 @@ layout_4 = [
     [
             {"title": "CrNo", "key" : "-", "dist": {"LINE":0},"postprocessor":"_dobropis_"},
             {"title": "InNum", "key" : "číslo:", "dist":"_next_"},
+            {"title": "InNum", "key" : "č.", "dist":"_next_"},
+
 
     ],
     [
-            
-        #   {"title": "Chera", "key" : "Dodavatel:", "dist": "_break_"},
-            {"title": "NaSup", "key" : "Dodavatel:", "dist": (1,"_line_")},
-            {"title": "StSup", "key" : "Dodavatel:", "dist": (2,"_line_")},
-            {"title": "PoSup", "key" : "Dodavatel:", "dist": (3,"_line_"),"postprocessor":"_postcode_"},
-            {"title": "CiSup", "key" : "Dodavatel:", "dist": (3,"_line_"),"postprocessor":"_cityname_"},
-            # {"title": "CoSup", "key" : "Dodavatel:", "dist": (4,"_line_")},
-            {"title": "INSup", "key" : "lČO:", "dist": "DIČ:"},
-            {"title": "TIDSup", "key" : "DIČ:", "dist": "_next_"},
-            {"title": "IBNSup","key" : "IBAN", "dist": [2,"_line_"]} ,
-            {"title": "BICSup", "key" : "Číslo", "dist": "-1"},
-            # {"title": "PayRef", "key" : "úhrady:", "dist": "_line_"},
+            {"title": "NaSup", "key" : "-", "dist":{"LINE":1}},
+            {"title": "StSup", "key" : "-", "dist":{"LINE":2}},
+            {"title": "PoSup", "key" : "-", "dist":{"LINE":3},"postprocessor":"_postcode_"},
+            {"title": "CiSup", "key" : "-", "dist":{"LINE":3},"postprocessor":"_cityname_"},
+            {"title": "INSup", "key" : "DIČ:", "dist": "-1"},
+            {"title": "TIDSup", "key" : "DIČ:", "dist": "1"},
+
+            #{"title": "IBNSup","key" : "IBAN", "dist": [2,"_line_"]} ,
+            {"title": "IBNSup","key" : "IBAN/SWIFT:", "dist": "1"} ,
+
+            # {"title": "BICSup", "key" : "Číslo", "dist": "-1"},
+            {"title": "BICSup", "key" : "IBAN/SWIFT:", "dist": "3"},
 
             {"title": "BaAcSup", "key" : 'účtu:', "dist": "1"},
             {"title": "BaCoSup", "key" : "účtu:", "dist": "2"},
             {"title": "PayRef", "key" : "úhrady:", "dist": "_line_"},
 
-            ],
+    ],
 
-            [
+    [
             {"title": "VaSym","key" : "Variabilní", "dist": "2","postprocessor":"check_num"},
             {"title": "KoSy","key" : "Konstantní", "dist":"2","postprocessor":"check_num"},
             # {"title": "SpSym","key" : "Spec.", "dist":"2","postprocessor":"check_num"},
-            {"title": "INCus", "key" : "DIČ:", "dist": "-1"},
+            {"title": "INCus", "key" : "IČ:", "dist": "1"},
             {"title": "TIDCus", "key" : "DIČ:", "dist": "1"},
-            {"title": "NaCus", "key" : "DIČ:", "dist": (1,"_line_")},
-            {"title": "StCus", "key" : "DIČ:", "dist": (2,"_line_")},
-            {"title": "PoCus", "key" : "DIČ:", "dist": (3,"_line_"),"postprocessor":"_postcode_"},
-            {"title": "CiCus", "key" : "DIČ:", "dist": (3,"_line_"),"postprocessor":"_cityname_"},
+            
+            ],
 
+            [
+            {"title": "NaCus", "key" : "-", "dist":{"LINE":1}},
+            {"title": "StCus", "key" : "-", "dist":{"LINE":2}},
+            {"title": "PoCus", "key" : "-", "dist":{"LINE":3},"postprocessor":"_postcode_"},
+            {"title": "CiCus", "key" : "-", "dist":{"LINE":3},"postprocessor":"_cityname_"},
             ],
 
             [
@@ -465,43 +472,14 @@ layout_4 = [
 
             ],
 
-            # [
-            # {"title": "AdDel", "key" : "určení:", "dist": "_rest_"},
+            [
 
-            #     #[(2000, 1435), (1930, 753)]
-            # ],
+            {"title": "VATRat0", "key" : 0, "dist": "_rest_","postprocessor":"existVAT0"},
+            {"title": "VATRat10", "key" : 0, "dist": "_rest_","postprocessor":"existVAT10"},
+            {"title": "VATRat15", "key" : 0, "dist": "_rest_","postprocessor":"existVAT15"},
+            {"title": "VATRat21", "key" : 0, "dist": "_rest_","postprocessor":"existVAT21"},
 
-            # [
-            # {"title": "OrdNum", "key" : "Objednávka:", "dist": "_line_"},#
-
-            # ],
-
-            # #the part for the VAT and accounting related sections
-            # [
-
-            # {"title": "VATRat0", "key" : 0, "dist": "_rest_","postprocessor":"VATRat0"},
-            # {"title": "VATRat10", "key" : 0, "dist": "_rest_","postprocessor":"VATRat10"},
-            # {"title": "VATRat15", "key" : 0, "dist": "_rest_","postprocessor":"VATRat15"},
-            # {"title": "VATRat21", "key" : 0, "dist": "_rest_","postprocessor":"VATRat21"},
-
-            # ],
-
-            # [
-            # {"title": "ToInv", "key" : 'úhradě', "dist": "Zálohy"},
-            # {"title": "AddPay", "key" : 'Zálohy', "dist": "Zbývá"},
-            # {"title": "ToPay", "key" : 'uhradit', "dist": [2,"_rest_"]},
-            # {"title": "InCur", "key" : 'uhradit', "dist": "_next_"},
-
-            # ],
-
-            # [
-            # {"title": "ExVat0", "key" : '-', "dist": {"LINE":0},"postprocessor":"ExVat0"},
-            # {"title": "ExVat10", "key" : '-', "dist": {"LINE":1},"postprocessor":"ExVat10"},
-            # {"title": "ExVat15", "key" : '-', "dist": {"LINE":2},"postprocessor":"ExVat15"},
-            # {"title": "ExVat21", "key" : '-', "dist": {"LINE":3},"postprocessor":"ExVat21"},
-
-
-            # ],
+            ],
 
 
             ]
@@ -590,6 +568,7 @@ layout_5 = [
             {"title": "TrVAT", "key" : 0, "dist": "_rest_","postprocessor":"TrVAT_check"},
 
             ],
+
 
 ]
 ################################################################

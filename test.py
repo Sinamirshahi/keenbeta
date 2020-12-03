@@ -405,7 +405,9 @@ set_environment()
 input_file = args["file"]
 
 # input_file = "/home/non/KeenData/zip/ABRA/Nedaňový doklad (neplátce)/22320093012500.pdf"
-input_file = "/home/non/work/01/2012010911231-VF_0068_2020.pdf"
+# input_file = "/home/non/work/01/201201114011408-BAY20061506550.pdf"
+# input_file = "/home/non/work/01/201201113919385-BAY20061506171.pdf"
+
 if save_logs_into_file:
         myfile = open(input_file+".txt",'w+') 
 
@@ -483,8 +485,8 @@ seg_data = data_extract(segs)
 # exit()
 
 
-# ##FOR TESTING
-# test_array = 4
+# #FOR TESTING
+# test_array = -1
 # seg_texts = seg_data[test_array]["text"]
 # #seg_top = seg_data[-1]["top"]
 # #segment_texts = [x for x in seg_texts if len(x)>1]
@@ -639,6 +641,9 @@ for index,seg in enumerate(seg_keys):
                     key_lock = True
                 #     print(seg_texts_refined)
                 #     exit()
+        # if isinstance(line["key"], list):
+
+
 
 
                 
@@ -707,10 +712,12 @@ for index,seg in enumerate(seg_keys):
         # print(line["key"])
         # print(distance)
         try:
+                # print("key is ",line["key"])
+                # print("test is ",seg_texts_refined)
                 var = crop_sentence(sentence_as_list=seg_texts_refined,start=line["key"],stop=stop,distance=distance,hot=hot_val)
         except:
+                # print(line["key"], " triggered")
                 var = None
-        # print("V ",var)
         if (var == [None] or var==None or len(var)==0)  and safe == True:
                 continue
 

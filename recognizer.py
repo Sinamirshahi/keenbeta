@@ -200,7 +200,7 @@ def ResizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
 # ap.add_argument("-i", "--image", required=True, help="Path to the image")
 # args = vars(ap.parse_args())
 
-input = "/home/non/kkk/keenbeta/jpg_converted/2012010911231-VF_0068_2020.pdf.jpg"
+input = "/home/non/kkk/keenbeta/jpg_converted/201201113919385-BAY20061506171.pdf.jpg"
 
 
 

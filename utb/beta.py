@@ -437,6 +437,9 @@ def crop_sentence(sentence_as_list, start ,distance = 1000000 , stop = None , se
     if sentence_mode is True, it will return a sentence in the form of string 
     rather than a list
     '''
+
+        
+
     sentence_list = sentence_as_list.copy()
 
     if distance == -1 or distance == -2: #dictionary passed
