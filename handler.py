@@ -1,9 +1,8 @@
 import glob
-mydir = "/home/non/work/01/"
+mydir = "/home/non/dadada/"
 file_list = glob.glob(mydir + r"*.pdf")
 
 print(len(file_list))
-    print(item)
 
 
 import os
