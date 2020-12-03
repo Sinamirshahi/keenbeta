@@ -424,11 +424,11 @@ layout_4 = [
             {"title": "INSup", "key" : "DIČ:", "dist": "-1"},
             {"title": "TIDSup", "key" : "DIČ:", "dist": "1"},
 
-            #{"title": "IBNSup","key" : "IBAN", "dist": [2,"_line_"]} ,
+            {"title": "IBNSup","key" : "(BIC):", "dist": "_next_"} ,
             {"title": "IBNSup","key" : "IBAN/SWIFT:", "dist": "1"} ,
 
-            # {"title": "BICSup", "key" : "Číslo", "dist": "-1"},
-            {"title": "BICSup", "key" : "IBAN/SWIFT:", "dist": "3"},
+            {"title": "BICSup", "key" : "Číslo", "dist": "-1","postprocessor":"_validbic_"},
+            {"title": "BICSup", "key" : "IBAN/SWIFT:", "dist": "3","postprocessor":"_validbic_"},
 
             {"title": "BaAcSup", "key" : 'účtu:', "dist": "1"},
             {"title": "BaCoSup", "key" : "účtu:", "dist": "2"},

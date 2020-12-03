@@ -7,7 +7,7 @@ import argparse
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-f", "--file", required=False,
-	help="path to pdf file")
+        help="path to pdf file")
 
 args = vars(ap.parse_args())
 
@@ -229,12 +229,18 @@ def exVat(word_list,num):
         return None
 
 def TrVAT_check(list_in):
+    try:
         for index,item in enumerate(list_in):
                 if item == "odvede" and ("zákazník" in list_in[index+1]):
                         return ["1"]
         return ["0"]
-
-
+    except:
+        return None
+def valid_bic(list_in):
+        if list_in[0].upper() == list_in[0]:
+                return list_in
+        else:
+                return None
 
 def preprocessor_handler(triggers,list_in):
         list_of_actions = []
@@ -331,6 +337,9 @@ def postprocessor_handler(triggers,list_in):
 
                 elif trigger == "_denoise_":
                         list_in = remove_noise(list_in)
+                elif trigger == "_validbic_":
+                        list_in = valid_bic(list_in)
+                
 
         return list_in
 
@@ -404,8 +413,8 @@ set_environment()
 input_file = args["file"]
 
 # input_file = "/home/non/KeenData/zip/ABRA/Nedaňový doklad (neplátce)/22320093012500.pdf"
-#input_file = "/home/non/work/01/201201114011408-BAY20061506550.pdf"
-#input_file = "/home/non/work/proSinu/layout1/sada-a-mix/2020_060.pdf"
+#input_file = "/home/non/work/01/201201113919385-BAY20061506171.pdf"
+input_file = "/home/non/KeenData/zip/MRP/Nedaňový doklad (neplátce)/BAY20101019480.pdf"
 
 if save_logs_into_file:
         myfile = open(input_file+".txt",'w+') 
@@ -654,7 +663,7 @@ for index,seg in enumerate(seg_keys):
                     temp = line["dist"]
                     #if key_lock != True or True :
                     line["key"] = hot_word(seg_texts_refined,line["key"],distance=(temp[0]-1))["next"]
-                    #print("nnnn ",line["key"])
+                #     print("nnnn ",line["key"])
                     line["dist"] = temp[1]
 
 
@@ -714,6 +723,7 @@ for index,seg in enumerate(seg_keys):
                 # print("key is ",line["key"])
                 # print("test is ",seg_texts_refined)
                 var = crop_sentence(sentence_as_list=seg_texts_refined,start=line["key"],stop=stop,distance=distance,hot=hot_val)
+                # print("V is ",var)
         except:
                 # print(line["key"], " triggered")
                 var = None
