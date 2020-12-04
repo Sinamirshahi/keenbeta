@@ -1,6 +1,13 @@
-import glob
-mydir = "/home/non/dadada/"
-file_list = glob.glob(mydir + r"*.pdf")
+import glob,os
+
+mydir = "/home/non/work/dadada/"
+file_list = glob.glob(os.path.join(mydir,"**","*.pdf"),recursive=True) 
+
+
+
+# for item in file_list:
+#     print(item)
+# exit()
 
 print(len(file_list))
 

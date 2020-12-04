@@ -665,7 +665,7 @@ def find_layout(image_to_check, template_folder, base_resolution = (300,400), me
 ###################
 
 
-def find_layout_beta(image_to_check, template_folder, base_resolution = (300,400), method = "SSIM", get_struct = False):
+def find_layout_beta_stable(image_to_check, template_folder, base_resolution = (300,400), method = "SSIM", get_struct = False):
 
         images_path = glob.glob(os.path.join(os.getcwd(),template_folder,"**","*.jpg"),recursive=True) 
         images = []
@@ -742,6 +742,48 @@ def find_layout_beta(image_to_check, template_folder, base_resolution = (300,400
 
 
 #####################
+def find_layout_beta(image_to_check, template_folder, base_resolution = (300,400), method = "SSIM", get_struct = False):
+
+        images_path = glob.glob(os.path.join(os.getcwd(),template_folder,"**","*.jpg"),recursive=True) 
+
+
+        images = []
+        for item in images_path:
+                img = cv2.resize(cv2.imread(item), base_resolution , interpolation = cv2.INTER_AREA)
+                struct = assembler(image=img) if get_struct is True else img
+                images.append( struct )
+
+
+        resized_images = process_image(images,base_resolution)
+
+
+        case = image_to_check.copy()
+
+        case = assembler(case) if get_struct is True else case
+
+        black_and_white=cv2.cvtColor(case, cv2.COLOR_BGR2GRAY)
+        base = cv2.resize(black_and_white, base_resolution , interpolation = cv2.INTER_AREA)
+
+        compared = compare_images(base,resized_images,method)
+
+        compared_sorted = sorted(compared,reverse=True)
+
+        path_sorted = []
+        for each in compared_sorted:
+                    temp = images_path[compared.index(each)]
+                    path_sorted.append(temp)
+
+        path = path_sorted[0]
+
+        
+
+        
+        layout = path.split(os.sep)[-3][-1]
+
+        
+        return (layout)
+
+###############
 
 
 def find_layout_beta2(image_to_check, template_folder, base_resolution = (300,400), method = "SSIM", get_struct = False):

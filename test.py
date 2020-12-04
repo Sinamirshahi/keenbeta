@@ -235,7 +235,9 @@ def TrVAT_check(list_in):
                         return ["1"]
         return ["0"]
     except:
-        return None
+        return ["0"]
+
+
 def valid_bic(list_in):
         if list_in[0].upper() == list_in[0]:
                 return list_in
@@ -345,7 +347,7 @@ def postprocessor_handler(triggers,list_in):
 
 
 safe = True
-save_logs_into_file = False
+save_logs_into_file = True
 set_environment()
 
 #ABRA
@@ -411,10 +413,11 @@ set_environment()
 
 
 input_file = args["file"]
-
 # input_file = "/home/non/KeenData/zip/ABRA/Nedaňový doklad (neplátce)/22320093012500.pdf"
-#input_file = "/home/non/work/01/201201113919385-BAY20061506171.pdf"
-#input_file = "/home/non/KeenData/zip/MRP/Nedaňový doklad (neplátce)/BAY20101019480.pdf"
+# input_file = "/home/non/work/01/201201113919385-BAY20061506171.pdf"
+input_file = "/home/non/kkk/keenbeta/data-train/layout-4/Přenesená DPH/22320081813451.pdf"
+
+print("File name : ",input_file)
 
 if save_logs_into_file:
         myfile = open(input_file+".txt",'w+') 
@@ -422,7 +425,9 @@ if save_logs_into_file:
 
 
 number_of_pages,path = image_convert_file(path_in=input_file,absolute_path=True,rotatation_fix=True,prefered_dpi=500)
-cat = "MasterPool" #KEEDDAT for new style of
+#cat = "MasterPool" #KEEDDAT for new style of
+#cat = "data-train" #KEEDDAT for new style of
+cat = "data-train-simplified"
 if number_of_pages > 1:
         img = image_combiner([path[0],path[-1]])
 else:
@@ -430,13 +435,22 @@ else:
 
 ####
 #print(img.shape)
-from utb.beta import find_layout_beta
-layout_number = int(find_layout_beta(img,template_folder=cat,get_struct=False))
 
+# import time
+# start = time.process_time()
+
+from utb.beta import find_layout_beta,find_layout_beta_stable
+layout_number = int(find_layout_beta(img,template_folder=cat,get_struct=False))
+# print("time : ",time.process_time() - start)
+# exit(0)
 #FOR THE SAKE OF SPEED CORRECT IT LATER
 # layout_number = int(find_layout(img,template_folder=cat,get_struct=False))
 # layout_number = 5
 print("the detected layout: ", layout_number)
+
+
+
+
 if save_logs_into_file:
         myfile.write("DETECTED LAYOUT : "+str(layout_number)+"\n")
 
