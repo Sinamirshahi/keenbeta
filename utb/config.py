@@ -394,8 +394,95 @@ layout_3 = [
 
 
 ]
-#############################################################
+
+
+# ############
+
 coordinates_4 = [
+[(78, 35), (1209, 516)],
+[(2951, 183), (1130, 228)],
+[(140, 808), (858, 464)],
+[(1296, 262), (1182, 1041)],
+[(87, 1172), (990, 2*438)],
+[(78, 1557), (1542, 823)],
+[(1497, 1575), (1016, 560)],
+[(2601, 1487), (1261, 867)],
+["čiastka", (1673, 150),[30,-5]],
+["uhradiť", (1600, 150),[30,-5]],
+[(5, 2692), (2295, 2791)]
+
+]
+
+layout_4 = [
+        [
+            {"title": "CrNo", "key" : 0, "dist": "_line_","postprocessor":"_dobropis_"},
+
+    ],
+    [
+            {"title": "InNum", "key" : 0, "dist": "_rest_","postprocessor":"_denoise_"},
+
+    ],
+
+    [
+            {"title": "NaSup", "key" : "-", "dist": {"LINE":0}},
+            {"title": "StSup", "key" : "-", "dist": {"LINE":1}},
+            {"title": "PoSup", "key" : "-", "dist": {"LINE":2}  ,"postprocessor":"_postcode_"},
+            {"title": "CiSup", "key" : "-", "dist": {"LINE":2}  ,"postprocessor":"_cityname_"},
+    ],
+
+    [
+                    
+            {"title": "INSup", "key" : "IČO:", "dist": "1"},
+            {"title": "TIDSup", "key" : "DPH:", "dist": "1"},
+    ],
+    [
+                    
+            {"title": "KoSy","key" : "Konštantný", "dist": '1',"postprocessor":"check_num"},
+            {"title": "VaSym","key" : "Variabilný", "dist":'1',"postprocessor":"check_num"},
+            {"title": "SpSym","key" : "Špecifický", "dist":'1',"postprocessor":"check_num"},
+            
+
+    ],
+    [
+            {"title": "BaAcSup", "key" : "faktůry", "dist": "1"},
+            {"title": "BaCoSup", "key" : "IBAN", "dist": "-1"},
+            {"title": "IBNSup","key" : "IBAN", "dist": "1"},
+            {"title": "BICSup", "key" : "SWIFT", "dist": "1"},
+    ],
+
+    [
+            {"title": "IssDay", "key" : "Vystavenia", "dist": "_line_"},#
+            {"title": "PayDay", "key" : "Splatnosti", "dist": "_line_"},#
+            {"title": "VATDay", "key" : "plnenia", "dist": "_line_"},#
+    ],
+    [
+            {"title": "INCus", "key" : "IČO:", "dist": "1","postprocessor":"check_num"},
+            {"title": "TIDCus", "key" : "DIČ:", "dist": "1","postprocessor":"check_num"},
+            {"title": "NaCus", "key" : "-", "dist": {"LINE":1}},
+            {"title": "StCus", "key" : "-", "dist": {"LINE":2}},
+            {"title": "PoCus", "key" :  "-", "dist": {"LINE":3},"postprocessor":"_postcode_"},
+            {"title": "CiCus", "key" : "-", "dist": {"LINE":3},"postprocessor":"_cityname_"},
+    ],
+            [
+            {"title": "ToInv", "key" : 0, "dist": "1"},
+            ],
+
+            [
+            {"title": "ToPay", "key" : '-', "dist": {"LINE":0}},
+
+            ],
+
+            [
+            {"title": "TrVAT", "key" : 0, "dist": "_rest_","postprocessor":"TrVAT_check"},
+
+            ],
+
+
+]
+
+
+#############################################################
+coordinates_5 = [
     [(2154, 148), (1620, 403)],
     [(297, 192), (1787, 1610)],
     [(2019, 615), (1635, 889)],
@@ -408,7 +495,7 @@ coordinates_4 = [
     ]
 
 
-layout_4 = [
+layout_5 = [
     [
             {"title": "CrNo", "key" : "-", "dist": {"LINE":0},"postprocessor":"_dobropis_"},
             {"title": "InNum", "key" : "číslo:", "dist":"_next_"},
@@ -487,90 +574,6 @@ layout_4 = [
 
 ############
 
-
-# ############
-
-coordinates_5 = [
-[(78, 35), (1209, 516)],
-[(2951, 183), (1130, 228)],
-[(140, 808), (858, 464)],
-[(1296, 262), (1182, 1041)],
-[(87, 1172), (990, 2*438)],
-[(78, 1557), (1542, 823)],
-[(1497, 1575), (1016, 560)],
-[(2601, 1487), (1261, 867)],
-["čiastka", (1673, 150),[30,-5]],
-["uhradiť", (1600, 150),[30,-5]],
-[(5, 2692), (2295, 2791)]
-
-]
-
-layout_5 = [
-        [
-            {"title": "CrNo", "key" : 0, "dist": "_line_","postprocessor":"_dobropis_"},
-
-    ],
-    [
-            {"title": "InNum", "key" : 0, "dist": "_rest_","postprocessor":"_denoise_"},
-
-    ],
-
-    [
-            {"title": "NaSup", "key" : "-", "dist": {"LINE":0}},
-            {"title": "StSup", "key" : "-", "dist": {"LINE":1}},
-            {"title": "PoSup", "key" : "-", "dist": {"LINE":2}  ,"postprocessor":"_postcode_"},
-            {"title": "CiSup", "key" : "-", "dist": {"LINE":2}  ,"postprocessor":"_cityname_"},
-    ],
-
-    [
-                    
-            {"title": "INSup", "key" : "IČO:", "dist": "1"},
-            {"title": "TIDSup", "key" : "DPH:", "dist": "1"},
-    ],
-    [
-                    
-            {"title": "KoSy","key" : "Konštantný", "dist": '1',"postprocessor":"check_num"},
-            {"title": "VaSym","key" : "Variabilný", "dist":'1',"postprocessor":"check_num"},
-            {"title": "SpSym","key" : "Špecifický", "dist":'1',"postprocessor":"check_num"},
-            
-
-    ],
-    [
-            {"title": "BaAcSup", "key" : "faktůry", "dist": "1"},
-            {"title": "BaCoSup", "key" : "IBAN", "dist": "-1"},
-            {"title": "IBNSup","key" : "IBAN", "dist": "1"},
-            {"title": "BICSup", "key" : "SWIFT", "dist": "1"},
-    ],
-
-    [
-            {"title": "IssDay", "key" : "Vystavenia", "dist": "_line_"},#
-            {"title": "PayDay", "key" : "Splatnosti", "dist": "_line_"},#
-            {"title": "VATDay", "key" : "plnenia", "dist": "_line_"},#
-    ],
-    [
-            {"title": "INCus", "key" : "IČO:", "dist": "1","postprocessor":"check_num"},
-            {"title": "TIDCus", "key" : "DIČ:", "dist": "1","postprocessor":"check_num"},
-            {"title": "NaCus", "key" : "-", "dist": {"LINE":1}},
-            {"title": "StCus", "key" : "-", "dist": {"LINE":2}},
-            {"title": "PoCus", "key" :  "-", "dist": {"LINE":3},"postprocessor":"_postcode_"},
-            {"title": "CiCus", "key" : "-", "dist": {"LINE":3},"postprocessor":"_cityname_"},
-    ],
-            [
-            {"title": "ToInv", "key" : 0, "dist": "1"},
-            ],
-
-            [
-            {"title": "ToPay", "key" : '-', "dist": {"LINE":0}},
-
-            ],
-
-            [
-            {"title": "TrVAT", "key" : 0, "dist": "_rest_","postprocessor":"TrVAT_check"},
-
-            ],
-
-
-]
 ################################################################
 list_of_layouts = [layout_1,layout_2,layout_3,layout_4,layout_5]
 list_of_coordinates = [coordinates_1,coordinates_2,coordinates_3,coordinates_4,coordinates_5]
