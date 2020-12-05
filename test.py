@@ -362,7 +362,7 @@ set_environment()
 #input_file = "/home/non/KeenData/New Layouts/Faktury k testování/ABRA/Nedaňový doklad (neplátce)/AF Hla 83.pdf"
 
 
-# #TEST SAMPLES OF POWER BI
+# #TEST SAMPLES OF POWER
 #input_file = "/home/non/201125131132392-22320062918022.pdf"
 #input_file = "/home/non/KeenData/zip/MRP/Daňový doklad/22320062918022.pdf"
 
